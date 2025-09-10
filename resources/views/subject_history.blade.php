@@ -42,21 +42,27 @@
                         </tr>
                     </thead>
                     <tbody id="subjectTableBody" class="bg-white divide-y divide-gray-200">
-                        @foreach($history as $record)
+                        @forelse($history as $record)
                         <tr class="hover:bg-gray-50">
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 font-medium">{{ $loop->iteration }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ $record->academic_year_range }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ $record->curriculum->name }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ $record->subject_code }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ ucfirst($record->action) }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ $record->created_at->format('Y-m-d H:i:s') }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{-- $record->academic_year_range --}}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{-- $record->curriculum->name --}}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{-- $record->subject_code --}}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{-- ucfirst($record->action) --}}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{-- $record->created_at->format('Y-m-d H:i:s') --}}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <a href="#" class="text-blue-600 hover:underline">View</a>
                                 <span class="text-gray-400">|</span>
                                 <a href="#" class="text-green-600 hover:underline">Export</a>
                             </td>
                         </tr>
-                        @endforeach
+                        @empty
+                        <tr>
+                            <td colspan="7" class="px-6 py-4 text-center text-sm text-gray-500">
+                                No history records found.
+                            </td>
+                        </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>

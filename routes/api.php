@@ -35,3 +35,7 @@ Route::post('/prerequisites', [PrerequisiteController::class, 'savePrerequisites
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::get('/subject_history', function () {
+    return view('subject_history');
+})->name('subject_history');
