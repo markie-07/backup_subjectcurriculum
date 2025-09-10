@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Curriculum;
 use App\Models\Subject;
 use App\Models\SubjectHistory;
-use Illuminate\Http\Request;
+use Illuminate\Http\Request; // Import the Request class
 use Illuminate\Support\Facades\DB;
 
 class SubjectHistoryController extends Controller
@@ -13,10 +13,27 @@ class SubjectHistoryController extends Controller
     /**
      * Display a listing of the subject history.
      */
-    public function index()
+    public function index(Request $request) // Add Request parameter to handle filtering
     {
-        $history = SubjectHistory::with('curriculum')->orderBy('created_at', 'desc')->get();
-        return view('subject_history', compact('history'));
+        // Fetch all curriculums to populate the filter dropdown.
+        $curriculums = Curriculum::orderBy('curriculum')->get();
+
+        // Start building the query to get history records.
+        $historyQuery = SubjectHistory::with('curriculum')->orderBy('created_at', 'desc');
+
+        // If a specific curriculum is requested via the dropdown, filter the query.
+        if ($request->filled('curriculum_id')) {
+            $historyQuery->where('curriculum_id', $request->curriculum_id);
+        }
+
+        // Execute the query to get the final list of history records.
+        $history = $historyQuery->get();
+
+        // Pass the filtered history and the full list of curriculums to the view.
+        return view('subject_history', [
+            'history'     => $history,
+            'curriculums' => $curriculums
+        ]);
     }
 
     /**

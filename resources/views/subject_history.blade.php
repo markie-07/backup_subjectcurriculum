@@ -5,6 +5,35 @@
     <div class="container mx-auto">
         <div class="bg-white p-6 rounded-2xl shadow-lg mb-8">
             <h1 class="text-2xl font-bold text-gray-800">Subject History</h1>
+            <p class="text-sm text-gray-500 mt-1">View, retrieve, or export subjects that have been removed from curriculums.</p>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="bg-white p-6 rounded-2xl shadow-lg mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
+                <!-- Curriculum Filter Dropdown -->
+                <div>
+                    <label for="curriculum_filter" class="block text-sm font-medium text-gray-700 mb-1">Filter by Curriculum</label>
+                    <select id="curriculum_filter" class="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                        <option value="{{ route('subject_history') }}">All Curriculums</option>
+                        @foreach($curriculums as $curriculum)
+                            <option value="{{ route('subject_history', ['curriculum_id' => $curriculum->id]) }}" 
+                                    {{ request('curriculum_id') == $curriculum->id ? 'selected' : '' }}>
+                                {{ $curriculum->curriculum }} ({{ $curriculum->program_code }})
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Search Bar -->
+                <div class="relative">
+                    <label for="historySearchInput" class="block text-sm font-medium text-gray-700 mb-1">Search Current View</label>
+                    <input type="text" id="historySearchInput" class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition" placeholder="Search by name, code, etc...">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none top-7">
+                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="bg-white p-6 rounded-2xl shadow-lg">
@@ -24,7 +53,7 @@
                     </thead>
                     <tbody id="subjectTableBody" class="bg-white divide-y divide-gray-200">
                         @forelse($history as $record)
-                        <tr class="hover:bg-gray-50">
+                        <tr class="hover:bg-gray-50 history-record">
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 font-medium">{{ $loop->iteration }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ $record->academic_year }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ $record->subject_name }}</td>
@@ -41,9 +70,9 @@
                             </td>
                         </tr>
                         @empty
-                        <tr>
+                        <tr class="empty-row">
                             <td colspan="8" class="px-6 py-4 text-center text-sm text-gray-500">
-                                No history records found.
+                                No history records found for the selected curriculum.
                             </td>
                         </tr>
                         @endforelse
@@ -73,6 +102,7 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+        // --- Retrieve Modal Logic ---
         const retrieveModal = document.getElementById('retrieveConfirmationModal');
         const cancelRetrieveButton = document.getElementById('cancelRetrieveButton');
         const confirmRetrieveButton = document.getElementById('confirmRetrieveButton');
@@ -92,14 +122,11 @@
 
         cancelRetrieveButton.addEventListener('click', hideRetrieveModal);
         retrieveModal.addEventListener('click', (e) => {
-            if (e.target === retrieveModal) {
-                hideRetrieveModal();
-            }
+            if (e.target === retrieveModal) hideRetrieveModal();
         });
 
         confirmRetrieveButton.addEventListener('click', async () => {
             if (!historyIdToRetrieve) return;
-
             try {
                 const response = await fetch(`/subject_history/${historyIdToRetrieve}/retrieve`, {
                     method: 'POST',
@@ -109,21 +136,42 @@
                         'Accept': 'application/json'
                     },
                 });
-
                 const result = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(result.message || 'Failed to retrieve the subject.');
-                }
-                
+                if (!response.ok) throw new Error(result.message || 'Failed to retrieve the subject.');
                 alert('Subject retrieved successfully!');
                 window.location.reload();
-
             } catch (error) {
                 console.error('Error retrieving subject:', error);
                 alert('Error: ' + error.message);
             } finally {
                 hideRetrieveModal();
+            }
+        });
+
+        // --- Filter and Search Logic ---
+        const curriculumFilter = document.getElementById('curriculum_filter');
+        curriculumFilter.addEventListener('change', (e) => {
+            window.location.href = e.target.value;
+        });
+
+        const searchInput = document.getElementById('historySearchInput');
+        const tableBody = document.getElementById('subjectTableBody');
+        const dataRows = tableBody.querySelectorAll('tr.history-record');
+        const emptyRow = tableBody.querySelector('tr.empty-row');
+
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            let visibleCount = 0;
+
+            dataRows.forEach(row => {
+                const rowText = row.textContent.toLowerCase();
+                const isVisible = rowText.includes(searchTerm);
+                row.style.display = isVisible ? '' : 'none';
+                if (isVisible) visibleCount++;
+            });
+
+            if (emptyRow) {
+                emptyRow.style.display = visibleCount === 0 ? '' : 'none';
             }
         });
     });
