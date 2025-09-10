@@ -4,7 +4,7 @@
 <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-8">
     <div class="container mx-auto">
         <div class="bg-white p-6 rounded-2xl shadow-lg mb-8">
-            <h1 class="text-2xl font-bold text-gray-800">Subject History</h1>
+            <h1 class="text-2xl font-bold text-gray-800">Subject Offering History</h1>
             <p class="text-sm text-gray-500 mt-1">View, retrieve, or export subjects that have been removed from curriculums.</p>
         </div>
 

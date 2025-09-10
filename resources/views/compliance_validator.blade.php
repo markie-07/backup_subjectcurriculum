@@ -5,7 +5,7 @@
     <div class="container mx-auto">
         {{-- Main Content Section --}}
         <div class="bg-white p-10 md:p-12 rounded-2xl shadow-lg border border-gray-200">
-            
+
             {{-- Page Title Section --}}
             <div class="mb-10">
                 <h1 class="text-3xl font-bold text-gray-900">Compliance Validator</h1>
@@ -32,7 +32,8 @@
                 <div id="links-container" class="hidden mt-8">
                     <div class="bg-gray-50 border border-gray-200 rounded-xl p-8">
                         <h3 id="links-header" class="text-lg font-semibold text-gray-800 mb-6 border-b border-gray-200 pb-4"></h3>
-                        
+
+                        {{-- CHED Links Section --}}
                         <div id="ched-links" class="hidden grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
                             @for ($year = 2025; $year >= 1994; $year--)
                                 <a href="https://ched.gov.ph/{{ $year }}-ched-memorandum-orders/" target="_blank" class="group block p-3 rounded-lg hover:bg-blue-100 transition-colors duration-200">
@@ -43,9 +44,87 @@
                             @endfor
                         </div>
 
-                        <div id="deped-links" class="hidden">
-                            <p class="text-gray-600">DepEd Issuances will be displayed here once available.</p>
-                            {{-- Add DepEd links here in the future --}}
+                        {{-- DepEd Links Section --}}
+                        <div id="deped-links" class="hidden space-y-3">
+                            {{-- Accordion for Shape Paper --}}
+                            <div class="deped-accordion border border-gray-200 rounded-lg">
+                                <button type="button" class="accordion-header w-full flex justify-between items-center p-4 bg-white hover:bg-gray-100 transition">
+                                    <span class="font-semibold text-gray-700">Shape Paper</span>
+                                    <svg class="w-5 h-5 text-gray-500 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </button>
+                                <div class="accordion-content hidden p-4 border-t border-gray-200 bg-white">
+                                    <a href="https://www.deped.gov.ph/wp-content/uploads/2024/05/The-Strengthened-Senior-High-School-Program-Shaping-Paper.pdf" target="_blank" class="block text-blue-600 hover:underline">The Strengthened Senior High School Program Shaping Paper</a>
+                                </div>
+                            </div>
+
+                            {{-- Accordion for Curriculum Guides (Core) --}}
+                            <div class="deped-accordion border border-gray-200 rounded-lg">
+                                <button type="button" class="accordion-header w-full flex justify-between items-center p-4 bg-white hover:bg-gray-100 transition">
+                                    <span class="font-semibold text-gray-700">Curriculum Guides (Core)</span>
+                                    <svg class="w-5 h-5 text-gray-500 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </button>
+                                <div class="accordion-content hidden p-4 border-t border-gray-200 bg-white space-y-2">
+                                    <a href="https://www.deped.gov.ph/wp-content/uploads/2024/05/Effective-Communication.pdf" target="_blank" class="block text-blue-600 hover:underline">Effective Communication</a>
+                                    <a href="https://www.deped.gov.ph/wp-content/uploads/2024/05/General-Mathematics.pdf" target="_blank" class="block text-blue-600 hover:underline">General Mathematics</a>
+                                    <a href="https://www.deped.gov.ph/wp-content/uploads/2024/05/General-Science.pdf" target="_blank" class="block text-blue-600 hover:underline">General Science</a>
+                                    <a href="https://www.deped.gov.ph/wp-content/uploads/2024/05/Life-and-Career-Skills.pdf" target="_blank" class="block text-blue-600 hover:underline">Life and Career Skills</a>
+                                    <a href="https://www.deped.gov.ph/wp-content/uploads/2024/05/Mabisang-Komunikasyon.pdf" target="_blank" class="block text-blue-600 hover:underline">Mabisang Komunikasyon</a>
+                                    <a href="https://www.deped.gov.ph/wp-content/uploads/2024/05/Pag-aaral-ng-Kasaysayan-at-Lipunang-Pilipino.pdf" target="_blank" class="block text-blue-600 hover:underline">Pag-aaral ng Kasaysayan at Lipunang Pilipino</a>
+                                </div>
+                            </div>
+
+                            {{-- Accordion for Curriculum Guides (Academic) --}}
+                            <div class="deped-accordion border border-gray-200 rounded-lg">
+                                <button type="button" class="accordion-header w-full flex justify-between items-center p-4 bg-white hover:bg-gray-100 transition">
+                                    <span class="font-semibold text-gray-700">Curriculum Guides (Academic)</span>
+                                    <svg class="w-5 h-5 text-gray-500 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </button>
+                                <div class="accordion-content hidden p-4 border-t border-gray-200 bg-white space-y-4">
+                                    <div class="space-y-2">
+                                        <h4 class="font-bold text-gray-600">ARTS, SOCIAL SCIENCE, AND HUMANITIES</h4>
+                                        <a href="https://www.deped.gov.ph/wp-content/uploads/Arts-1-Creative-Industries-Visual-Art-Literary-Art-Media-Art-Applied-Art-and-Traditional-Art.pdf" target="_blank" class="block pl-4 text-blue-600 hover:underline">Arts 1 (Creative Industries - Visual Art, Literary Art, Media Art, Applied Art, and Traditional Art)</a>
+                                        <a href="https://www.deped.gov.ph/wp-content/uploads/Arts-2-Creative-Industries-II-%E2%80%93-Performing-Arts.pdf" target="_blank" class="block pl-4 text-blue-600 hover:underline">Arts 2 (Creative Industries II – Performing Arts)</a>
+                                        <a href="https://www.deped.gov.ph/wp-content/uploads/Social-Science-1-Introduction-to-Social-Sciences.pdf" target="_blank" class="block pl-4 text-blue-600 hover:underline">Social Science 1 (Introduction to Social Sciences)</a>
+                                        <a href="https://www.deped.gov.ph/wp-content/uploads/Humanities-1-Creative-Writing.pdf" target="_blank" class="block pl-4 text-blue-600 hover:underline">Humanities 1 (Creative Writing)</a>
+                                        <a href="https://www.deped.gov.ph/wp-content/uploads/Humanities-2-Introduction-to-World-Religions-and-Belief-Systems.pdf" target="_blank" class="block pl-4 text-blue-600 hover:underline">Humanities 2 (Introduction to World Religions and Belief Systems)</a>
+                                    </div>
+                                    <div class="space-y-2">
+                                        <h4 class="font-bold text-gray-600">ENGINEERING AND TECHNOLOGY</h4>
+                                        <a href="https://www.deped.gov.ph/wp-content/uploads/Engineering-1-Calculus.pdf" target="_blank" class="block pl-4 text-blue-600 hover:underline">Engineering 1 (Calculus)</a>
+                                        <a href="https://www.deped.gov.ph/wp-content/uploads/Engineering-2-Fundamentals-of-Programming.pdf" target="_blank" class="block pl-4 text-blue-600 hover:underline">Engineering 2 (Fundamentals of Programming)</a>
+                                        <a href="https://www.deped.gov.ph/wp-content/uploads/Engineering-3-Basic-Electricity-and-Electronics.pdf" target="_blank" class="block pl-4 text-blue-600 hover:underline">Engineering 3 (Basic Electricity and Electronics)</a>
+                                    </div>
+                                     <div class="space-y-2">
+                                        <h4 class="font-bold text-gray-600">BUSINESS, ECONOMICS, AND MANAGEMENT</h4>
+                                        <a href="https://www.deped.gov.ph/wp-content/uploads/Business-1-Business-Enterprise-Simulation.pdf" target="_blank" class="block pl-4 text-blue-600 hover:underline">Business 1 (Business Enterprise Simulation)</a>
+                                        <a href="https://www.deped.gov.ph/wp-content/uploads/Economics-1-Introduction-to-Economics.pdf" target="_blank" class="block pl-4 text-blue-600 hover:underline">Economics 1 (Introduction to Economics)</a>
+                                        <a href="https://www.deped.gov.ph/wp-content/uploads/Management-1-Fundamentals-of-Accountancy-Business-and-Management.pdf" target="_blank" class="block pl-4 text-blue-600 hover:underline">Management 1 (Fundamentals of Accountancy, Business, and Management)</a>
+                                    </div>
+                                     <div class="space-y-2">
+                                        <h4 class="font-bold text-gray-600">HEALTH AND MEDICAL SCIENCES</h4>
+                                        <a href="https://www.deped.gov.ph/wp-content/uploads/Health-Science-1-Introduction-to-Health-Science.pdf" target="_blank" class="block pl-4 text-blue-600 hover:underline">Health Science 1 (Introduction to Health Science)</a>
+                                        <a href="https://www.deped.gov.ph/wp-content/uploads/Health-Science-2-Basic-Human-Anatomy-and-Physiology.pdf" target="_blank" class="block pl-4 text-blue-600 hover:underline">Health Science 2 (Basic Human Anatomy and Physiology)</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                             {{-- Accordion for Curriculum Guides (TechPro) --}}
+                            <div class="deped-accordion border border-gray-200 rounded-lg">
+                                <button type="button" class="accordion-header w-full flex justify-between items-center p-4 bg-white hover:bg-gray-100 transition">
+                                    <span class="font-semibold text-gray-700">Curriculum Guides (TechPro)</span>
+                                    <svg class="w-5 h-5 text-gray-500 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </button>
+                                <div class="accordion-content hidden p-4 border-t border-gray-200 bg-white space-y-4">
+                                     <div class="space-y-2">
+                                        <h4 class="font-bold text-gray-600">INFORMATION AND COMMUNICATIONS TECHNOLOGY</h4>
+                                        <a href="https://www.deped.gov.ph/wp-content/uploads/2024/05/Digital-Tools-and-Productivity-Applications.pdf" target="_blank" class="block pl-4 text-blue-600 hover:underline">Digital Tools and Productivity Applications</a>
+                                        <a href="https://www.deped.gov.ph/wp-content/uploads/2024/05/Multimedia-Development-and-Design.pdf" target="_blank" class="block pl-4 text-blue-600 hover:underline">Multimedia Development and Design</a>
+                                        <a href="https://www.deped.gov.ph/wp-content/uploads/2024/05/Computer-Systems-and-Network-Administration.pdf" target="_blank" class="block pl-4 text-blue-600 hover:underline">Computer Systems and Network Administration</a>
+                                        <a href="https://www.deped.gov.ph/wp-content/uploads/2024/05/Web-Development.pdf" target="_blank" class="block pl-4 text-blue-600 hover:underline">Web Development</a>
+                                        <a href="https://www.deped.gov.ph/wp-content/uploads/2024/05/Computer-Programming.pdf" target="_blank" class="block pl-4 text-blue-600 hover:underline">Computer Programming</a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -105,6 +184,18 @@ document.addEventListener('DOMContentLoaded', () => {
             agencyMenu.classList.add('hidden');
             agencyButton.setAttribute('aria-expanded', 'false');
         }
+    });
+
+    // Accordion Logic for DepEd links
+    document.querySelectorAll('.accordion-header').forEach(button => {
+        button.addEventListener('click', () => {
+            const content = button.nextElementSibling;
+            const icon = button.querySelector('svg');
+
+            const isHidden = content.classList.contains('hidden');
+            content.classList.toggle('hidden', !isHidden);
+            icon.classList.toggle('rotate-180', isHidden);
+        });
     });
 });
 </script>
