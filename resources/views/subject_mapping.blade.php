@@ -3,7 +3,7 @@
 @section('content')
 <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-6">
     <div class="bg-white rounded-2xl shadow-xl p-8">
-
+        
         <div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center">
             <div class="mb-4 sm:mb-0">
                 <h1 class="text-3xl font-bold text-gray-800">Subject Mapping</h1>
@@ -16,13 +16,13 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
+            
             <div class="lg:col-span-1 bg-gray-50 border border-gray-200 rounded-xl p-6 flex flex-col">
                 <div class="pb-4 border-b border-gray-200">
                     <h2 class="text-xl font-semibold text-gray-800">Available Subjects</h2>
                     <p class="text-sm text-gray-500">Find and select subjects to add to the curriculum.</p>
                 </div>
-
+                
                 <div class="flex flex-col sm:flex-row gap-3 my-4">
                     <div class="relative flex-grow">
                         <input type="text" id="searchInput" class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition" placeholder="Search subject...">
@@ -36,7 +36,6 @@
                     </select>
                 </div>
 
-                
                 <div id="availableSubjects" class="flex-1 overflow-y-auto pr-2 -mr-2 space-y-2">
                     <p class="text-gray-500 text-center mt-4">Select a curriculum to view subjects.</p>
                 </div>
@@ -47,16 +46,13 @@
                     <h2 class="text-xl font-semibold text-gray-800 mb-2 sm:mb-0">Curriculum Overview</h2>
                     <select id="curriculumSelector" class="w-full sm:w-auto border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
                         <option value="">Select a Curriculum</option>
-                        
                     </select>
                 </div>
 
-                
                 <div id="grand-total-container" class="hidden mt-4 p-4 bg-blue-100 border border-blue-200 text-blue-800 rounded-lg shadow-inner flex justify-between items-center">
                     <span class="text-lg font-bold">Total Curriculum Units:</span>
                     <span id="grand-total-units" class="text-2xl font-extrabold">0</span>
                 </div>
-
 
                 <div id="curriculumOverview" class="mt-4 space-y-6 flex-1 overflow-y-auto">
                     <p class="text-gray-500 text-center mt-4">Select a curriculum from the dropdown to start mapping subjects.</p>
@@ -76,11 +72,10 @@
         </div>
     </div>
 
-    
+    {{-- Modal for adding a new subject --}}
     <div id="addSubjectModal" class="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-75 transition-opacity duration-300 ease-out hidden">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="relative bg-white w-full max-w-6xl rounded-2xl shadow-2xl p-6 md:p-8 transform scale-95 opacity-0 transition-all duration-300 ease-out" id="modal-subject-panel">
-
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-2xl font-extrabold text-gray-800">Create New Subject</h2>
                     <button id="closeSubjectModalButton" class="text-gray-400 hover:text-gray-600 focus:outline-none transition-colors duration-200" aria-label="Close modal">
@@ -89,7 +84,7 @@
                         </svg>
                     </button>
                 </div>
-
+                
                 <form id="subjectForm" class="space-y-6">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="md:col-span-1">
@@ -115,7 +110,7 @@
                         <label for="subjectUnit" class="block text-sm font-semibold text-gray-700 mb-1">Unit</label>
                         <input type="number" id="subjectUnit" name="subjectUnit" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" required>
                     </div>
-
+                    
                     <div class="space-y-2">
                         <div class="flex justify-between items-center">
                             <h3 class="text-sm font-semibold text-gray-700">Weekly Topics</h3>
@@ -154,20 +149,23 @@
                         @endfor
                     </div>
 
-                    <div class="pt-4 flex justify-end gap-3">
-                        <button type="button" id="cancelSubjectModalButton" class="px-6 py-3 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors">
-                            Cancel
-                        </button>
-                        <button type="submit" class="px-6 py-3 rounded-lg text-sm font-semibold text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
-                            Create
-                        </button>
+                    <div class="pt-4 flex justify-between gap-3">
+                        <div id="createdTimestamp" class="text-sm text-gray-500 self-center"></div>
+                        <div class="flex gap-3">
+                            <button type="button" id="cancelSubjectModalButton" class="px-6 py-3 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors">
+                                Cancel
+                            </button>
+                            <button type="submit" class="px-6 py-3 rounded-lg text-sm font-semibold text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                                Create
+                            </button>
+                        </div>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-    
+    {{-- Modal for displaying subject details on double-click --}}
     <div id="subjectDetailsModal" class="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-75 transition-opacity duration-300 ease-out hidden">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="relative bg-white w-full max-w-4xl rounded-2xl shadow-2xl p-6 md:p-8 transform scale-95 opacity-0 transition-all duration-300 ease-out" id="modal-details-panel">
@@ -179,7 +177,7 @@
                         </svg>
                     </button>
                 </div>
-
+                
                 <div class="space-y-4">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
@@ -194,15 +192,38 @@
                             <p class="text-sm font-semibold text-gray-700">Unit:</p>
                             <p id="detailsSubjectUnit" class="text-lg text-gray-900"></p>
                         </div>
+                        <div id="detailsCreatedAtContainer">
+                            <p class="text-sm font-semibold text-gray-700">Created At:</p>
+                            <p id="detailsCreatedAt" class="text-lg text-gray-900"></p>
+                        </div>
                     </div>
                     <div class="space-y-2" id="detailsLessonsContainer">
                         <h3 class="text-md font-bold text-gray-800 pt-4">Lessons</h3>
-                        
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    
+    {{-- NEW: Confirmation Modal for Subject Removal --}}
+    <div id="removeConfirmationModal" class="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-75 transition-opacity duration-300 ease-out hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="relative bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 text-center transform scale-95 opacity-0 transition-all duration-300 ease-out" id="remove-modal-panel">
+                <div class="w-12 h-12 rounded-full bg-red-100 p-2 flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800">Remove Subject</h3>
+                <p class="text-sm text-gray-500 mt-2">Are you sure you want to remove this subject from the semester?</p>
+                <div class="mt-6 flex justify-center gap-4">
+                    <button id="cancelRemoveButton" class="w-full px-6 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all">Cancel</button>
+                    <button id="confirmRemoveButton" class="w-full px-6 py-2.5 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition-all">Yes, Remove</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
 </main>
 
 <script>
@@ -218,8 +239,22 @@
         const generateTopicsButton = document.getElementById('generateTopicsButton');
         const topicSpinner = document.getElementById('topicSpinner');
 
+        const createdTimestamp = document.getElementById('createdTimestamp');
+
         const showSubjectModal = () => {
             addSubjectModal.classList.remove('hidden');
+            const now = new Date();
+            const options = {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true
+            };
+            createdTimestamp.textContent = `Created: ${now.toLocaleDateString('en-US', options)}`;
+            
             setTimeout(() => {
                 addSubjectModal.classList.remove('opacity-0');
                 subjectModalPanel.classList.remove('opacity-0', 'scale-95');
@@ -441,6 +476,19 @@
             document.getElementById('detailsSubjectCode').textContent = data.subject_code;
             document.getElementById('detailsSubjectType').textContent = data.subject_type;
             document.getElementById('detailsSubjectUnit').textContent = data.subject_unit;
+            if (data.created_at) {
+                const date = new Date(data.created_at);
+                const options = {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: true
+                };
+                document.getElementById('detailsCreatedAt').textContent = date.toLocaleDateString('en-US', options);
+            }
             const lessonsContainer = document.getElementById('detailsLessonsContainer');
             lessonsContainer.innerHTML = '<h3 class="text-md font-bold text-gray-800 pt-4">Lessons</h3>';
             if (data.lessons && Object.keys(data.lessons).length > 0) {
@@ -468,10 +516,76 @@
         subjectDetailsModal.addEventListener('click', (e) => { if (e.target.id === 'subjectDetailsModal') hideDetailsModal(); });
 
         let draggedItem = null;
+        let subjectTagToRemove = null;
+
+        const showRemoveConfirmationModal = () => {
+            removeConfirmationModal.classList.remove('hidden');
+            setTimeout(() => {
+                removeConfirmationModal.classList.remove('opacity-0');
+                removeModalPanel.classList.remove('opacity-0', 'scale-95');
+            }, 10);
+        };
+
+        const hideRemoveConfirmationModal = () => {
+            removeConfirmationModal.classList.add('opacity-0');
+            removeModalPanel.classList.add('opacity-0', 'scale-95');
+            setTimeout(() => {
+                removeConfirmationModal.classList.add('hidden');
+                subjectTagToRemove = null;
+            }, 300);
+        };
+
+        cancelRemoveButton.addEventListener('click', hideRemoveConfirmationModal);
+        
+        confirmRemoveButton.addEventListener('click', async () => {
+            if (subjectTagToRemove) {
+                const subjectData = JSON.parse(subjectTagToRemove.dataset.subjectData);
+                const curriculumId = curriculumSelector.value;
+                
+                try {
+                    const response = await fetch('/api/subject-history', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        },
+                        body: JSON.stringify({
+                            curriculumId: curriculumId,
+                            subject: subjectData,
+                            action: 'removed',
+                            academic_year_range: document.querySelector(`option[value="${curriculumId}"]`).dataset.academicYear // Assuming you have this data
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Failed to log subject removal to history.');
+                    }
+                    
+                    // Remove the subject from the DOM after successful API call
+                    subjectTagToRemove.remove();
+                    
+                    // Re-enable the subject card in the Available Subjects list
+                    const originalSubjectCard = document.getElementById(`subject-${subjectData.subject_code.toLowerCase()}`);
+                    if (originalSubjectCard) {
+                        originalSubjectCard.classList.remove('opacity-50', 'cursor-not-allowed', 'mapped-subject-card');
+                        originalSubjectCard.setAttribute('draggable', 'true');
+                    }
+                    
+                    updateUnitTotals();
+                    alert('Subject removed and logged to history!');
+                    
+                } catch (error) {
+                    console.error('Error logging removal to history:', error);
+                    alert('An error occurred while logging the subject removal. Please try again.');
+                }
+                
+                hideRemoveConfirmationModal();
+            }
+        });
+        
         const addDraggableEvents = (item) => {
             item.addEventListener('dragstart', (e) => {
-                // Check if the item is an "in-use" subject card
-                if (item.classList.contains('mapped-subject-card')) {
+                if (!isEditing) {
                     e.preventDefault();
                     return;
                 }
@@ -499,12 +613,11 @@
             addDoubleClickEvents(newSubjectCard);
             return newSubjectCard;
         };
-        
-        
+
         const createSubjectTag = (subjectData, isEditing = false) => {
             const subjectTag = document.createElement('div');
             subjectTag.className = 'subject-tag bg-white border border-gray-300 shadow-sm rounded-lg p-2 flex items-center justify-between w-full transition-all hover:shadow-md hover:border-blue-500';
-            subjectTag.setAttribute('draggable', isEditing); // Draggable only when in edit mode
+            subjectTag.setAttribute('draggable', isEditing);
             subjectTag.dataset.subjectData = JSON.stringify(subjectData);
 
             let typeColorClass = 'bg-gray-400';
@@ -532,15 +645,14 @@
             
             subjectTag.querySelector('.delete-subject-tag').onclick = (e) => {
                 e.stopPropagation();
-                subjectTag.remove();
-                updateUnitTotals(); 
+                subjectTagToRemove = subjectTag;
+                showRemoveConfirmationModal();
             };
 
             addDraggableEvents(subjectTag);
             addDoubleClickEvents(subjectTag);
             return subjectTag;
         };
-
         
         const updateUnitTotals = () => {
             let grandTotal = 0;
@@ -627,16 +739,12 @@
             const isDuplicateInSameSemester = Array.from(targetContainer.querySelectorAll('.subject-tag')).some(tag => JSON.parse(tag.dataset.subjectData).subject_code === droppedSubjectData.subject_code);
             
             if (!isDuplicateInSameSemester) {
-                // If the dragged item is from the Available Subjects list
                 if (draggedItem.classList.contains('subject-card')) {
-                    // Create a copy for the dropzone and disable the original
                     const subjectTag = createSubjectTag(droppedSubjectData, isEditing);
                     targetContainer.appendChild(subjectTag);
                     draggedItem.classList.add('opacity-50', 'cursor-not-allowed', 'mapped-subject-card');
                     draggedItem.setAttribute('draggable', 'false');
-                    
                 } else if (draggedItem.classList.contains('subject-tag')) {
-                    // If the dragged item is from another semester box
                     draggedItem.parentNode.removeChild(draggedItem);
                     const subjectTag = createSubjectTag(droppedSubjectData, isEditing);
                     targetContainer.appendChild(subjectTag);
@@ -646,9 +754,8 @@
         };
         
         const initDragAndDrop = () => {
-             // Attach event listeners to all dropzones
             document.querySelectorAll('.semester-dropzone').forEach(dropzone => {
-                 addDragAndDropListeners(dropzone);
+                addDragAndDropListeners(dropzone);
             });
 
             document.body.addEventListener('dragover', e => e.preventDefault());
@@ -694,7 +801,6 @@
                 return response.json();
             })
             .then(data => {
-                // Show a success alert before redirecting
                 alert('Subject mapping is done! Proceeding to prerequisites.');
                 window.location.href = `/pre_requisite?curriculumId=${curriculumId}`;
             })
@@ -713,6 +819,7 @@
                         const optionText = `${curriculum.year_level}: ${curriculum.program_code} ${curriculum.curriculum_name} (${curriculum.academic_year})`;
                         const option = new Option(optionText, curriculum.id);
                         option.dataset.yearLevel = curriculum.year_level;
+                        option.dataset.academicYear = curriculum.academic_year;
                         curriculumSelector.appendChild(option);
                     });
                     const urlParams = new URLSearchParams(window.location.search);
@@ -732,9 +839,7 @@
                 curriculumOverview.innerHTML = '<p class="text-gray-500 text-center mt-4">Select a curriculum from the dropdown to start mapping subjects.</p>';
                 availableSubjectsContainer.innerHTML = '<p class="text-gray-500 text-center mt-4">Select a curriculum to view subjects.</p>';
                 updateUnitTotals();
-                // When no curriculum is selected, hide the edit button
                 document.getElementById('editCurriculumButton').classList.add('hidden');
-                // And disable drag and drop
                 toggleEditMode(false);
             }
         });
@@ -763,20 +868,16 @@
                     renderAvailableSubjects(data.allSubjects, data.curriculum.subjects);
                     populateMappedSubjects(data.curriculum.subjects);
                     
-                    // Check if the curriculum has subjects to determine the initial state
                     const hasMappedSubjects = data.curriculum.subjects.length > 0;
                     
                     if (hasMappedSubjects) {
-                         // If subjects are already mapped, disable editing by default
                         toggleEditMode(false);
                         document.getElementById('editCurriculumButton').classList.remove('hidden');
                     } else {
-                        // If no subjects are mapped, enable editing by default
                         toggleEditMode(true);
                         document.getElementById('editCurriculumButton').classList.add('hidden');
                     }
                     
-                    // Show the edit button since a curriculum is now loaded
                     document.getElementById('editCurriculumButton').classList.remove('hidden');
                 })
                 .catch(error => {
@@ -821,6 +922,7 @@
                     </div>`;
             }
             curriculumOverview.innerHTML = html;
+            initDragAndDrop();
         }
 
         function renderAvailableSubjects(subjects, mappedSubjects = []) {
@@ -848,7 +950,7 @@
             subjects.forEach(subject => {
                 const dropzone = document.querySelector(`#curriculumOverview .semester-dropzone[data-year="${subject.pivot.year}"][data-semester="${subject.pivot.semester}"] .flex-wrap`);
                 if (dropzone) {
-                    const subjectTag = createSubjectTag(subject, isEditing); 
+                    const subjectTag = createSubjectTag(subject, isEditing);
                     dropzone.appendChild(subjectTag);
                 }
             });
