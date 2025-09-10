@@ -29,10 +29,9 @@ Route::post('/subjects', [SubjectController::class, 'store']);
 Route::post('/generate-lesson-topics', [AiController::class, 'generateLessonTopics']);
 Route::post('/generate-lesson-plan', [AiController::class, 'generateLessonPlan']);
 
-// --- Prerequisite Routes ---
-// Manages subject prerequisites within a curriculum.
-Route::get('/prerequisites/{curriculumId}', [PrerequisiteController::class, 'getPrerequisites']);
-Route::post('/prerequisites', [PrerequisiteController::class, 'savePrerequisites']);
+// Add these new routes for handling prerequisites
+Route::get('/prerequisites/{curriculum}', [PrerequisiteController::class, 'fetchData']);
+Route::post('/prerequisites', [PrerequisiteController::class, 'store']);
 
 // --- Default User Route ---
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

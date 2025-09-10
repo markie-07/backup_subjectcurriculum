@@ -20,9 +20,8 @@ Route::get('/subject_mapping', function () {
     return view('subject_mapping');
 })->name('subject_mapping');
 
-Route::get('/pre_requisite', function () {
-    return view('pre_requisite');
-})->name('pre_requisite');
+// UPDATED ROUTE: This now calls the controller to fetch the necessary data.
+Route::get('/pre_requisite', [PrerequisiteController::class, 'index'])->name('pre_requisite');
 
 Route::get('/grade_setup', function () {
     return view('grade_setup');

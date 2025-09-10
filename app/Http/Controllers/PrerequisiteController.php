@@ -2,58 +2,70 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Prerequisite;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use App\Models\Curriculum;
+use App\Models\Prerequisite;
 
 class PrerequisiteController extends Controller
 {
-    public function getPrerequisites($curriculumId)
+    /**
+     * Display the prerequisite management page.
+     */
+    public function index()
     {
-        $prerequisites = Prerequisite::where('curriculum_id', $curriculumId)->get();
-
-        $groupedPrerequisites = [];
-        foreach ($prerequisites as $prerequisite) {
-            if (!isset($groupedPrerequisites[$prerequisite->subject_code])) {
-                $groupedPrerequisites[$prerequisite->subject_code] = [];
-            }
-            $groupedPrerequisites[$prerequisite->subject_code][] = $prerequisite->prerequisite_subject_code;
-        }
-
-        return response()->json($groupedPrerequisites);
+        $curriculums = Curriculum::orderBy('curriculum')->get();
+        return view('pre_requisite', compact('curriculums'));
     }
 
-    public function savePrerequisites(Request $request)
+    /**
+     * Fetch subjects and existing prerequisites for a given curriculum.
+     * This will be called by our JavaScript.
+     */
+    public function fetchData(Curriculum $curriculum)
     {
-        $curriculumId = $request->input('curriculum_id');
-        $subjectCode = $request->input('subject_code');
-        $prerequisites = $request->input('prerequisites');
+        // Eager load subjects to improve performance
+        $curriculum->load('subjects');
 
-        // Log the request data for debugging
-        Log::info('Saving prerequisites', [
-            'curriculum_id' => $curriculumId,
-            'subject_code' => $subjectCode,
-            'prerequisites' => $prerequisites
+        $subjects = $curriculum->subjects->sortBy('subject_code')->values();
+
+        $prerequisites = Prerequisite::where('curriculum_id', $curriculum->id)
+            ->get()
+            ->groupBy('subject_code'); // Group by the subject that HAS prerequisites
+
+        return response()->json([
+            'subjects' => $subjects,
+            'prerequisites' => $prerequisites,
+        ]);
+    }
+
+    /**
+     * Store the prerequisite relationships for a subject.
+     */
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'curriculum_id' => 'required|exists:curriculums,id',
+            'subject_code' => 'required|string',
+            'prerequisite_codes' => 'nullable|array',
+            'prerequisite_codes.*' => 'string', // Ensure all items in the array are strings
         ]);
 
-        if (is_null($prerequisites)) {
-            $prerequisites = [];
-        }
-
-        // Delete existing prerequisites for this subject and curriculum
-        Prerequisite::where('curriculum_id', $curriculumId)
-            ->where('subject_code', $subjectCode)
+        // First, delete all existing prerequisites for this subject to avoid duplicates
+        Prerequisite::where('curriculum_id', $validated['curriculum_id'])
+            ->where('subject_code', $validated['subject_code'])
             ->delete();
 
-        // Add the new prerequisites
-        foreach ($prerequisites as $prerequisiteCode) {
-            Prerequisite::create([
-                'curriculum_id' => $curriculumId,
-                'subject_code' => $subjectCode,
-                'prerequisite_subject_code' => $prerequisiteCode,
-            ]);
+        // Now, add the new prerequisites from the form submission
+        if (!empty($validated['prerequisite_codes'])) {
+            foreach ($validated['prerequisite_codes'] as $prereqCode) {
+                Prerequisite::create([
+                    'curriculum_id' => $validated['curriculum_id'],
+                    'subject_code' => $validated['subject_code'],
+                    'prerequisite_subject_code' => $prereqCode,
+                ]);
+            }
         }
 
-        return response()->json(['message' => 'Prerequisites saved successfully.']);
+        return response()->json(['message' => 'Prerequisites saved successfully!']);
     }
 }
