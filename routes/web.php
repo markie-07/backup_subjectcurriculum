@@ -51,5 +51,3 @@ Route::post('/compliance-validator/validate', function () {
     // Handle validation logic here
 })->name('ched.validator.validate');
 
-// New route for subject history
-Route::get('subject_history', [SubjectHistoryController::class, 'index'])->name('subject_history');

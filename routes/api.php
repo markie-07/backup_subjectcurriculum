@@ -6,7 +6,6 @@ use App\Http\Controllers\CurriculumController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\AiController;
 use App\Http\Controllers\PrerequisiteController;
-use App\Http\Controllers\SubjectHistoryController;
 
 // --- Curriculum Routes ---
 // Handles all actions related to curriculum management.
@@ -36,6 +35,3 @@ Route::post('/prerequisites', [PrerequisiteController::class, 'savePrerequisites
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-
-// New route to log subject removal
-Route::post('/curriculum/remove-subject', [SubjectHistoryController::class, 'removeSubject']);
