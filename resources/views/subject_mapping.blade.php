@@ -556,7 +556,7 @@
             const semester = dropzone.dataset.semester;
 
             try {
-                // Call the new, correct API endpoint
+                // Call the new API endpoint to remove and log the subject
                 const response = await fetch('/api/curriculum/remove-subject', {
                     method: 'POST',
                     headers: {
@@ -566,7 +566,7 @@
                     },
                     body: JSON.stringify({
                         curriculumId: curriculumId,
-                        subjectCode: subjectData.subject_code,
+                        subjectId: subjectData.id, // Use the subject's primary ID
                         year: year,
                         semester: semester
                     })
@@ -597,7 +597,8 @@
                 // 3. Recalculate and display the new unit totals
                 updateUnitTotals();
                 
-                alert('Subject removed successfully!'); // Or use your custom notification function
+                // You can replace this with a more elegant notification if you have one
+                alert('Subject removed successfully and logged to history!');
 
             } catch (error) {
                 console.error('Error removing subject:', error);

@@ -16,6 +16,9 @@ Route::put('/curriculums/{id}', [CurriculumController::class, 'update']);
 Route::delete('/curriculums/{id}', [CurriculumController::class, 'destroy']);
 Route::post('/curriculums/save', [CurriculumController::class, 'saveSubjects']);
 
+// Add this line with your other curriculum routes
+Route::post('/curriculum/remove-subject', [CurriculumController::class, 'removeSubject']);
+
 // --- Subject Routes ---
 // Handles creation and retrieval of subjects.
 Route::get('/subjects', [SubjectController::class, 'index']);

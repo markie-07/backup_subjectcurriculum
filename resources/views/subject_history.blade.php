@@ -3,62 +3,46 @@
 @section('content')
 <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-8">
     <div class="container mx-auto">
-        {{-- Main Content Section --}}
         <div class="bg-white p-6 rounded-2xl shadow-lg mb-8">
-            <div class="flex justify-between items-center">
-                <h1 class="text-2xl font-bold text-gray-800">Subject History</h1>
-            </div>
+            <h1 class="text-2xl font-bold text-gray-800">Subject History</h1>
         </div>
 
-        {{-- Main container for the design --}}
         <div class="bg-white p-6 rounded-2xl shadow-lg">
-            {{-- Curriculum and Search Bar --}}
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center pb-4 border-b border-gray-200 mb-4 space-y-4 md:space-y-0">
-                <div class="flex-1 w-full md:w-auto">
-                    {{-- This dropdown is for filtering and should be populated dynamically --}}
-                    <select id="curriculumFilter" class="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
-                        <option value="All">All Curriculums</option>
-                        {{-- Options will be populated by JavaScript from API call --}}
-                    </select>
-                </div>
-                <div class="relative flex-1 w-full md:w-auto md:ml-4">
-                    <input type="text" id="searchInput" class="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" placeholder="Search by subject code, name, year...">
-                    <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                </div>
-            </div>
-
-            {{-- Table for Subjects --}}
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-blue-800">
                         <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider rounded-tl-lg">#</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">#</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Academic Year</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Curriculum</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Subject Name</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Subject Code</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Action</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Date</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider rounded-tr-lg">Actions</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Year</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Semester</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Date Removed</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="subjectTableBody" class="bg-white divide-y divide-gray-200">
                         @forelse($history as $record)
                         <tr class="hover:bg-gray-50">
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 font-medium">{{ $loop->iteration }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{-- $record->academic_year_range --}}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{-- $record->curriculum->name --}}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{-- $record->subject_code --}}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{-- ucfirst($record->action) --}}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{-- $record->created_at->format('Y-m-d H:i:s') --}}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ $record->academic_year }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ $record->subject_name }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ $record->subject_code }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ $record->year }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ $record->semester == 1 ? '1st Semester' : '2nd Semester' }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ $record->created_at->format('n/j/y') }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                                 <a href="#" class="text-blue-600 hover:underline">View</a>
-                                <span class="text-gray-400">|</span>
+                                <span>|</span>
                                 <a href="#" class="text-green-600 hover:underline">Export</a>
+                                <span>|</span>
+                                <button class="text-purple-600 hover:underline retrieve-btn" data-id="{{ $record->id }}">Retrieve</button>
                             </td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="7" class="px-6 py-4 text-center text-sm text-gray-500">
+                            <td colspan="8" class="px-6 py-4 text-center text-sm text-gray-500">
                                 No history records found.
                             </td>
                         </tr>
@@ -70,57 +54,78 @@
     </div>
 </main>
 
-{{-- Script to handle filtering and searching --}}
+{{-- Modal for Retrieve Confirmation --}}
+<div id="retrieveConfirmationModal" class="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-75 hidden">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="relative bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 text-center">
+            <div class="w-12 h-12 rounded-full bg-purple-100 p-2 flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h5M7 7l9 9M20 20v-5h-5"></path></svg>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-800">Retrieve Subject</h3>
+            <p class="text-sm text-gray-500 mt-2">Are you sure you want to add this subject back to the curriculum?</p>
+            <div class="mt-6 flex justify-center gap-4">
+                <button id="cancelRetrieveButton" class="w-full px-6 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200">Cancel</button>
+                <button id="confirmRetrieveButton" class="w-full px-6 py-2.5 text-sm font-medium text-white bg-purple-600 rounded-lg hover:bg-purple-700">Yes, Retrieve</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const searchInput = document.getElementById('searchInput');
-        const curriculumFilter = document.getElementById('curriculumFilter');
-        const tableBody = document.getElementById('subjectTableBody');
-        const tableRows = tableBody.getElementsByTagName('tr');
+        const retrieveModal = document.getElementById('retrieveConfirmationModal');
+        const cancelRetrieveButton = document.getElementById('cancelRetrieveButton');
+        const confirmRetrieveButton = document.getElementById('confirmRetrieveButton');
+        let historyIdToRetrieve = null;
 
-        const filterTable = () => {
-            const searchTerm = searchInput.value.toLowerCase();
-            const selectedCurriculum = curriculumFilter.value;
+        document.querySelectorAll('.retrieve-btn').forEach(button => {
+            button.addEventListener('click', (e) => {
+                historyIdToRetrieve = e.target.dataset.id;
+                retrieveModal.classList.remove('hidden');
+            });
+        });
 
-            for (let i = 0; i < tableRows.length; i++) {
-                const row = tableRows[i];
-                const rowCells = row.getElementsByTagName('td');
-                const academicYear = rowCells[1].textContent.toLowerCase();
-                const curriculumName = rowCells[2].textContent.toLowerCase();
-                const subjectCode = rowCells[3].textContent.toLowerCase();
-                const action = rowCells[4].textContent.toLowerCase();
-
-                const matchesSearch = (academicYear.includes(searchTerm) || curriculumName.includes(searchTerm) || subjectCode.includes(searchTerm) || action.includes(searchTerm));
-                const matchesFilter = (selectedCurriculum === 'All' || curriculumName.includes(selectedCurriculum.toLowerCase()));
-
-                if (matchesSearch && matchesFilter) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            }
+        const hideRetrieveModal = () => {
+            retrieveModal.classList.add('hidden');
+            historyIdToRetrieve = null;
         };
 
-        searchInput.addEventListener('input', filterTable);
-        curriculumFilter.addEventListener('change', filterTable);
+        cancelRetrieveButton.addEventListener('click', hideRetrieveModal);
+        retrieveModal.addEventListener('click', (e) => {
+            if (e.target === retrieveModal) {
+                hideRetrieveModal();
+            }
+        });
 
-        // Fetch curriculums to populate the filter dropdown
-        const fetchCurriculums = async () => {
+        confirmRetrieveButton.addEventListener('click', async () => {
+            if (!historyIdToRetrieve) return;
+
             try {
-                const response = await fetch('/api/curriculums');
-                const curriculums = await response.json();
-                curriculums.forEach(curriculum => {
-                    const option = document.createElement('option');
-                    option.value = curriculum.name;
-                    option.textContent = curriculum.name;
-                    curriculumFilter.appendChild(option);
+                const response = await fetch(`/subject_history/${historyIdToRetrieve}/retrieve`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Accept': 'application/json'
+                    },
                 });
-            } catch (error) {
-                console.error('Error fetching curriculums:', error);
-            }
-        };
 
-        fetchCurriculums();
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.message || 'Failed to retrieve the subject.');
+                }
+                
+                alert('Subject retrieved successfully!');
+                window.location.reload();
+
+            } catch (error) {
+                console.error('Error retrieving subject:', error);
+                alert('Error: ' + error.message);
+            } finally {
+                hideRetrieveModal();
+            }
+        });
     });
 </script>
 @endsection

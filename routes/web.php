@@ -36,13 +36,8 @@ Route::get('/equivalency_tool', function () {
     return view('equivalency_tool');
 })->name('equivalency_tool');
 
-Route::get('/subject_history', function () {
-    // For now, we'll pass an empty array to prevent the error.
-    // Later, you can replace this with actual data from your database.
-    $history = []; 
-    
-    return view('subject_history', ['history' => $history]);
-})->name('subject_history');
+Route::get('/subject_history', [SubjectHistoryController::class, 'index'])->name('subject_history');
+Route::post('/subject_history/{history}/retrieve', [SubjectHistoryController::class, 'retrieve'])->name('subject_history.retrieve');
 
 
 // CHED Compliance Validator

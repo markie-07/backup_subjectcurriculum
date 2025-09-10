@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Curriculum;
 use App\Models\Subject;
 use Illuminate\Http\Request;
+use App\Models\SubjectHistory; // ADDED: For logging removed subjects
+use Illuminate\Support\Facades\DB; // ADDED: For database transactions
+use Carbon\Carbon; // ADDED: For handling dates
 
 class CurriculumController extends Controller
 {
@@ -136,5 +139,69 @@ class CurriculumController extends Controller
             }
         }
         return response()->json(['message' => 'Curriculum saved successfully!', 'curriculumId' => $curriculum->id]);
+        
+    }
+
+    // =================================================================
+    // == ✨ NEW FUNCTION ADDED HERE ✨ ==
+    // =================================================================
+    /**
+     * Removes a subject from a curriculum and logs the action to history.
+     */
+    public function removeSubject(Request $request)
+    {
+        $validated = $request->validate([
+            'curriculumId' => 'required|exists:curriculums,id',
+            'subjectId'    => 'required|exists:subjects,id', // Validating based on subject ID
+            'year'         => 'required|integer',
+            'semester'     => 'required|integer',
+        ]);
+
+        try {
+            // Use a database transaction to ensure data integrity
+            DB::transaction(function () use ($validated) {
+                $curriculum = Curriculum::findOrFail($validated['curriculumId']);
+                $subject = Subject::findOrFail($validated['subjectId']);
+
+                // Find the original pivot record to get its creation date
+                $pivotRecord = DB::table('curriculum_subject')
+                    ->where('curriculum_id', $validated['curriculumId'])
+                    ->where('subject_id', $validated['subjectId'])
+                    ->where('year', $validated['year'])
+                    ->where('semester', $validated['semester'])
+                    ->first();
+
+                if (!$pivotRecord) {
+                    // This case should ideally not happen if the frontend is correct
+                    throw new \Exception('Subject not found in the specified semester for this curriculum.');
+                }
+
+                // Detach the subject from the pivot table based on all criteria
+                $curriculum->subjects()->wherePivot('year', $validated['year'])->wherePivot('semester', $validated['semester'])->detach($validated['subjectId']);
+
+                // Construct the academic year range for the history log
+                $startYear = Carbon::parse($pivotRecord->created_at)->year;
+                $endYear = Carbon::now()->year;
+                $academicYearRange = ($startYear === $endYear) ? (string)$startYear : "{$startYear}-{$endYear}";
+
+                // Create the history log entry
+                SubjectHistory::create([
+                    'curriculum_id' => $curriculum->id,
+                    'subject_id'    => $subject->id,
+                    'academic_year' => $academicYearRange,
+                    'subject_name'  => $subject->subject_name,
+                    'subject_code'  => $subject->subject_code,
+                    'year'          => $validated['year'],
+                    'semester'      => $validated['semester'],
+                    'action'        => 'removed', // You can track different actions later
+                ]);
+            });
+
+            return response()->json(['message' => 'Subject removed and history logged successfully.']);
+
+        } catch (\Exception $e) {
+            // Return a detailed error message for easier debugging
+            return response()->json(['message' => 'Failed to remove subject: ' . $e->getMessage()], 500);
+        }
     }
 }
