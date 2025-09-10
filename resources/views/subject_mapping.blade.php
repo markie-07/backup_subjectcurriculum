@@ -517,6 +517,11 @@
 
         let draggedItem = null;
         let subjectTagToRemove = null;
+        
+        const removeConfirmationModal = document.getElementById('removeConfirmationModal');
+        const removeModalPanel = document.getElementById('remove-modal-panel');
+        const cancelRemoveButton = document.getElementById('cancelRemoveButton');
+        const confirmRemoveButton = document.getElementById('confirmRemoveButton');
 
         const showRemoveConfirmationModal = () => {
             removeConfirmationModal.classList.remove('hidden');
@@ -537,51 +542,74 @@
 
         cancelRemoveButton.addEventListener('click', hideRemoveConfirmationModal);
         
+        // =================================================================
+        // == ✨ UPDATED CODE BLOCK STARTS HERE ✨ ==
+        // =================================================================
         confirmRemoveButton.addEventListener('click', async () => {
-            if (subjectTagToRemove) {
-                const subjectData = JSON.parse(subjectTagToRemove.dataset.subjectData);
-                const curriculumId = curriculumSelector.value;
-                
-                try {
-                    const response = await fetch('/api/subject-history', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                        },
-                        body: JSON.stringify({
-                            curriculumId: curriculumId,
-                            subject: subjectData,
-                            action: 'removed',
-                            academic_year_range: document.querySelector(`option[value="${curriculumId}"]`).dataset.academicYear // Assuming you have this data
-                        })
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error('Failed to log subject removal to history.');
-                    }
-                    
-                    // Remove the subject from the DOM after successful API call
-                    subjectTagToRemove.remove();
-                    
-                    // Re-enable the subject card in the Available Subjects list
-                    const originalSubjectCard = document.getElementById(`subject-${subjectData.subject_code.toLowerCase()}`);
-                    if (originalSubjectCard) {
-                        originalSubjectCard.classList.remove('opacity-50', 'cursor-not-allowed', 'mapped-subject-card');
-                        originalSubjectCard.setAttribute('draggable', 'true');
-                    }
-                    
-                    updateUnitTotals();
-                    alert('Subject removed and logged to history!');
-                    
-                } catch (error) {
-                    console.error('Error logging removal to history:', error);
-                    alert('An error occurred while logging the subject removal. Please try again.');
+            if (!subjectTagToRemove) return;
+
+            // Get all necessary data from the subject tag and its container
+            const subjectData = JSON.parse(subjectTagToRemove.dataset.subjectData);
+            const curriculumId = curriculumSelector.value;
+            const dropzone = subjectTagToRemove.closest('.semester-dropzone');
+            const year = dropzone.dataset.year;
+            const semester = dropzone.dataset.semester;
+
+            try {
+                // Call the new, correct API endpoint
+                const response = await fetch('/api/curriculum/remove-subject', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        curriculumId: curriculumId,
+                        subjectCode: subjectData.subject_code,
+                        year: year,
+                        semester: semester
+                    })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.message || 'Failed to remove the subject.');
                 }
+
+                // --- On Success, Update the UI ---
+
+                // 1. Remove the subject tag from the semester box
+                subjectTagToRemove.remove();
+
+                // 2. Re-enable the subject card in the "Available Subjects" list
+                const originalSubjectCard = document.getElementById(`subject-${subjectData.subject_code.toLowerCase()}`);
+                if (originalSubjectCard) {
+                    originalSubjectCard.classList.remove('opacity-50', 'cursor-not-allowed', 'mapped-subject-card');
+                    originalSubjectCard.setAttribute('draggable', 'true');
+                    const statusIndicator = originalSubjectCard.querySelector('div:last-child');
+                    if(statusIndicator) {
+                        statusIndicator.innerHTML = `<svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>`;
+                    }
+                }
+
+                // 3. Recalculate and display the new unit totals
+                updateUnitTotals();
                 
+                alert('Subject removed successfully!'); // Or use your custom notification function
+
+            } catch (error) {
+                console.error('Error removing subject:', error);
+                alert('Error: ' + error.message);
+            } finally {
+                // 4. Hide the confirmation modal
                 hideRemoveConfirmationModal();
             }
         });
+        // =================================================================
+        // == ✨ UPDATED CODE BLOCK ENDS HERE ✨ ==
+        // =================================================================
         
         const addDraggableEvents = (item) => {
             item.addEventListener('dragstart', (e) => {

@@ -38,4 +38,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 // New route to log subject removal
-Route::post('/subject-history', [SubjectHistoryController::class, 'store']);
+Route::post('/curriculum/remove-subject', [SubjectHistoryController::class, 'removeSubject']);

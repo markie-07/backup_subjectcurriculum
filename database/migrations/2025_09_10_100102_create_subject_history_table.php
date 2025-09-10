@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('subject_history', function (Blueprint $table) {
@@ -18,14 +15,12 @@ return new class extends Migration
             $table->string('subject_name')->nullable();
             $table->integer('units')->nullable();
             $table->string('academic_year_range');
+            $table->string('semester'); // ✨ ADDED THIS LINE
             $table->string('action'); // 'added' or 'removed'
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('subject_history');
