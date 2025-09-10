@@ -38,7 +38,13 @@ class CurriculumController extends Controller
             'yearLevel' => 'required|in:Senior High,College',
         ]);
 
-        $curriculum = Curriculum::create($validated);
+        // FIX: Explicitly create the curriculum to map the request field names to the database column names.
+        $curriculum = Curriculum::create([
+            'curriculum' => $validated['curriculum'],
+            'program_code' => $validated['programCode'],
+            'academic_year' => $validated['academicYear'],
+            'year_level' => $validated['yearLevel'],
+        ]);
 
         return response()->json(['message' => 'Curriculum created successfully!', 'curriculum' => $curriculum], 201);
     }
@@ -55,7 +61,15 @@ class CurriculumController extends Controller
             'academicYear' => 'required|string|max:255',
             'yearLevel' => 'required|in:Senior High,College',
         ]);
-        $curriculum->update($validated);
+        
+        // FIX: The update method also needs to map the request field names.
+        $curriculum->update([
+            'curriculum' => $validated['curriculum'],
+            'program_code' => $validated['programCode'],
+            'academic_year' => $validated['academicYear'],
+            'year_level' => $validated['yearLevel'],
+        ]);
+
         return response()->json(['message' => 'Curriculum updated successfully!', 'curriculum' => $curriculum]);
     }
 

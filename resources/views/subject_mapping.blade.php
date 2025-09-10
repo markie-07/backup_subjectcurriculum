@@ -61,10 +61,13 @@
                 <div id="curriculumOverview" class="mt-4 space-y-6 flex-1 overflow-y-auto">
                     <p class="text-gray-500 text-center mt-4">Select a curriculum from the dropdown to start mapping subjects.</p>
                 </div>
-
                 
-                <div class="mt-8 pt-6 border-t border-gray-200 flex justify-end">
-                    <button id="saveCurriculumButton" class="px-6 py-3 rounded-lg text-sm font-semibold text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors shadow-md">
+                <div class="mt-8 pt-6 border-t border-gray-200 flex justify-end gap-2">
+                    <button id="editCurriculumButton" class="px-6 py-3 rounded-lg text-sm font-semibold text-blue-700 bg-white border border-blue-700 hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors shadow-md hidden">
+                        <svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z"></path></svg>
+                        Edit
+                    </button>
+                    <button id="saveCurriculumButton" class="px-6 py-3 rounded-lg text-sm font-semibold text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors shadow-md" disabled>
                         <svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v6a2 2 0 002 2h6m4-4H9m0 0V9m0 0V5a2 2 0 012-2h6a2 2 0 012 2v6a2 2 0 01-2 2h-3m-4-4V9"></path></svg>
                         Save and Proceed to Prerequisites
                     </button>
@@ -364,6 +367,7 @@
                 const weekTextarea = document.getElementById(`week-${week}-lessons`);
                 const topic = weekTextarea.value;
                 const subjectName = document.getElementById('subjectName').value;
+                const subjectUnit = document.getElementById('subjectUnit').value;
 
                 if (!topic) {
                     alert(`Please enter a topic for Week ${week} or generate topics first.`);
@@ -383,7 +387,7 @@
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                     },
-                    body: JSON.stringify({ subjectName, topic })
+                    body: JSON.stringify({ subjectName, topic, subjectUnit })
                 })
                 .then(response => {
                     if (!response.ok) {
@@ -392,18 +396,11 @@
                     return response.json();
                 })
                 .then(data => {
-                    const objectives = data.learning_objectives.map(obj => `- ${obj.objective}: ${obj.description}`).join('\n');
-                    let tableContent = 'Lesson Plan:\n' + '--------------------------------------------------\n';
-                    if (data.lesson_plan_table && Array.isArray(data.lesson_plan_table)) {
-                        data.lesson_plan_table.forEach(row => {
-                            tableContent += `Activity: ${row.activity || 'N/A'}\n`;
-                            tableContent += `Description: ${row.description || 'N/A'}\n`;
-                            tableContent += `Duration (mins): ${row.duration_minutes || 'N/A'}\n`;
-                            tableContent += '--------------------------------------------------\n';
-                        });
+                    if (data.lessonPlan) {
+                        weekTextarea.value = data.lessonPlan;
+                    } else {
+                        weekTextarea.value = 'Could not generate a detailed lesson plan. Please try again.';
                     }
-                    const lessonContent = data.detailed_lesson_content || 'No detailed lesson content was generated.';
-                    weekTextarea.value = `Topic: ${data.topic}\n\n` + `Learning Objectives:\n${objectives}\n\n` + `${tableContent}\n` + `Detailed Lesson:\n${lessonContent}\n\n` + `Assessment:\n${data.assessment}`;
                 })
                 .catch(error => {
                     console.error('Error generating detailed lesson:', error);
@@ -473,6 +470,11 @@
         let draggedItem = null;
         const addDraggableEvents = (item) => {
             item.addEventListener('dragstart', (e) => {
+                // Check if the item is an "in-use" subject card
+                if (item.classList.contains('mapped-subject-card')) {
+                    e.preventDefault();
+                    return;
+                }
                 draggedItem = item;
                 e.dataTransfer.setData('text/plain', item.dataset.subjectData);
                 setTimeout(() => item.classList.add('opacity-50', 'bg-gray-200'), 0);
@@ -486,23 +488,23 @@
             item.addEventListener('dblclick', () => showDetailsModal(JSON.parse(item.dataset.subjectData)));
         };
 
-        const createSubjectCard = (subject) => {
+        const createSubjectCard = (subject, isMapped = false) => {
             const newSubjectCard = document.createElement('div');
             newSubjectCard.id = `subject-${subject.subject_code.toLowerCase()}`;
-            newSubjectCard.className = 'subject-card flex items-center justify-between p-3 bg-white hover:bg-blue-50 border border-gray-200 rounded-lg cursor-grab transition';
-            newSubjectCard.setAttribute('draggable', 'true');
+            newSubjectCard.className = `subject-card flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg transition-all ${isMapped ? 'opacity-50 cursor-not-allowed mapped-subject-card' : 'hover:bg-blue-50 cursor-grab'}`;
+            newSubjectCard.setAttribute('draggable', !isMapped);
             newSubjectCard.dataset.subjectData = JSON.stringify(subject);
-            newSubjectCard.innerHTML = `<div><p class="font-semibold text-gray-700">${subject.subject_name}</p><p class="text-xs text-gray-500">${subject.subject_code}</p><p class="text-xs text-gray-500">Unit: ${subject.subject_unit}</p></div><div class="flex items-center space-x-2"><svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></div>`;
+            newSubjectCard.innerHTML = `<div><p class="font-semibold text-gray-700">${subject.subject_name}</p><p class="text-xs text-gray-500">${subject.subject_code}</p><p class="text-xs text-gray-500">Unit: ${subject.subject_unit}</p></div><div class="flex items-center space-x-2">${isMapped ? '<span class="text-xs font-semibold text-blue-500 bg-blue-100 px-2 py-1 rounded-full">In Use</span>' : '<svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>'}</div>`;
             addDraggableEvents(newSubjectCard);
             addDoubleClickEvents(newSubjectCard);
             return newSubjectCard;
         };
         
         
-        const createSubjectTag = (subjectData) => {
+        const createSubjectTag = (subjectData, isEditing = false) => {
             const subjectTag = document.createElement('div');
-            subjectTag.className = 'subject-tag bg-white border border-gray-300 shadow-sm rounded-lg p-2 flex items-center justify-between w-full cursor-grab transition-all hover:shadow-md hover:border-blue-500';
-            subjectTag.setAttribute('draggable', 'true');
+            subjectTag.className = 'subject-tag bg-white border border-gray-300 shadow-sm rounded-lg p-2 flex items-center justify-between w-full transition-all hover:shadow-md hover:border-blue-500';
+            subjectTag.setAttribute('draggable', isEditing); // Draggable only when in edit mode
             subjectTag.dataset.subjectData = JSON.stringify(subjectData);
 
             let typeColorClass = 'bg-gray-400';
@@ -522,7 +524,7 @@
                 </div>
                 <div class="flex items-center gap-3">
                     <span class="text-sm font-semibold text-gray-700">${subjectData.subject_unit} units</span>
-                    <button class="delete-subject-tag text-gray-400 hover:text-red-600 transition-colors">
+                    <button class="delete-subject-tag ${isEditing ? '' : 'hidden'} text-gray-400 hover:text-red-600 transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
                 </div>
@@ -564,46 +566,109 @@
             grandTotalSpan.textContent = grandTotal;
             grandTotalContainer.classList.remove('hidden');
         };
+        
+        let isEditing = false;
+        const toggleEditMode = (enableEdit) => {
+            isEditing = enableEdit;
+            const dropzones = document.querySelectorAll('.semester-dropzone');
+            const deleteButtons = document.querySelectorAll('.delete-subject-tag');
+            const saveButton = document.getElementById('saveCurriculumButton');
+            const editButton = document.getElementById('editCurriculumButton');
 
+            if (isEditing) {
+                dropzones.forEach(dropzone => {
+                    dropzone.classList.remove('locked');
+                    addDragAndDropListeners(dropzone);
+                });
+                deleteButtons.forEach(button => button.classList.remove('hidden'));
+                saveButton.removeAttribute('disabled');
+                editButton.innerHTML = `<svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg> Cancel`;
+            } else {
+                dropzones.forEach(dropzone => {
+                    dropzone.classList.add('locked');
+                    removeDragAndDropListeners(dropzone);
+                });
+                deleteButtons.forEach(button => button.classList.add('hidden'));
+                saveButton.setAttribute('disabled', 'disabled');
+                editButton.innerHTML = `<svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z"></path></svg> Edit`;
+            }
+        };
+
+        const addDragAndDropListeners = (dropzone) => {
+            dropzone.addEventListener('dragover', dragOverHandler);
+            dropzone.addEventListener('dragleave', dragLeaveHandler);
+            dropzone.addEventListener('drop', dropHandler);
+        };
+        
+        const removeDragAndDropListeners = (dropzone) => {
+            dropzone.removeEventListener('dragover', dragOverHandler);
+            dropzone.removeEventListener('dragleave', dragLeaveHandler);
+            dropzone.removeEventListener('drop', dropHandler);
+        };
+
+        const dragOverHandler = (e) => {
+            e.preventDefault();
+            e.currentTarget.classList.add('border-blue-500', 'bg-blue-50');
+        };
+
+        const dragLeaveHandler = (e) => {
+            e.currentTarget.classList.remove('border-blue-500', 'bg-blue-50');
+        };
+
+        const dropHandler = (e) => {
+            e.preventDefault();
+            const dropzone = e.currentTarget;
+            dropzone.classList.remove('border-blue-500', 'bg-blue-50');
+            if (!draggedItem) return;
+            
+            const droppedSubjectData = JSON.parse(e.dataTransfer.getData('text/plain'));
+            const targetContainer = dropzone.querySelector('.flex-wrap');
+            
+            const isDuplicateInSameSemester = Array.from(targetContainer.querySelectorAll('.subject-tag')).some(tag => JSON.parse(tag.dataset.subjectData).subject_code === droppedSubjectData.subject_code);
+            
+            if (!isDuplicateInSameSemester) {
+                // If the dragged item is from the Available Subjects list
+                if (draggedItem.classList.contains('subject-card')) {
+                    // Create a copy for the dropzone and disable the original
+                    const subjectTag = createSubjectTag(droppedSubjectData, isEditing);
+                    targetContainer.appendChild(subjectTag);
+                    draggedItem.classList.add('opacity-50', 'cursor-not-allowed', 'mapped-subject-card');
+                    draggedItem.setAttribute('draggable', 'false');
+                    
+                } else if (draggedItem.classList.contains('subject-tag')) {
+                    // If the dragged item is from another semester box
+                    draggedItem.parentNode.removeChild(draggedItem);
+                    const subjectTag = createSubjectTag(droppedSubjectData, isEditing);
+                    targetContainer.appendChild(subjectTag);
+                }
+                updateUnitTotals();
+            }
+        };
+        
         const initDragAndDrop = () => {
+             // Attach event listeners to all dropzones
             document.querySelectorAll('.semester-dropzone').forEach(dropzone => {
-                dropzone.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    dropzone.classList.add('border-blue-500', 'bg-blue-50');
-                });
-                dropzone.addEventListener('dragleave', () => dropzone.classList.remove('border-blue-500', 'bg-blue-50'));
-                dropzone.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    dropzone.classList.remove('border-blue-500', 'bg-blue-50');
-                    if (!draggedItem) return;
-                    
-                    const droppedSubjectData = JSON.parse(e.dataTransfer.getData('text/plain'));
-                    const targetContainer = dropzone.querySelector('.flex-wrap');
-                    
-                    const isDuplicateInSameSemester = Array.from(targetContainer.querySelectorAll('.subject-tag')).some(tag => JSON.parse(tag.dataset.subjectData).subject_code === droppedSubjectData.subject_code);
-                    
-                    if (!isDuplicateInSameSemester) {
-                        if (draggedItem.classList.contains('subject-tag')) {
-                            draggedItem.parentNode.removeChild(draggedItem);
-                        }
-                        
-                        const subjectTag = createSubjectTag(droppedSubjectData);
-                        targetContainer.appendChild(subjectTag);
-                        updateUnitTotals();
-                    }
-                });
+                 addDragAndDropListeners(dropzone);
             });
 
             document.body.addEventListener('dragover', e => e.preventDefault());
             document.body.addEventListener('drop', e => {
                 e.preventDefault();
-                if (draggedItem && draggedItem.classList.contains('subject-tag') && !e.target.closest('.semester-dropzone')) {
+                if (isEditing && draggedItem && draggedItem.classList.contains('subject-tag') && !e.target.closest('.semester-dropzone')) {
+                    const subjectData = JSON.parse(draggedItem.dataset.subjectData);
+                    const originalSubjectCard = document.getElementById(`subject-${subjectData.subject_code.toLowerCase()}`);
+                    if (originalSubjectCard) {
+                        originalSubjectCard.classList.remove('opacity-50', 'cursor-not-allowed', 'mapped-subject-card');
+                        originalSubjectCard.setAttribute('draggable', 'true');
+                    }
                     draggedItem.remove();
                     updateUnitTotals();
                 }
             });
         };
-
+        
+        document.getElementById('editCurriculumButton').addEventListener('click', () => toggleEditMode(!isEditing));
+        
         const saveCurriculumButton = document.getElementById('saveCurriculumButton');
         saveCurriculumButton.addEventListener('click', () => {
             const curriculumId = curriculumSelector.value;
@@ -629,6 +694,8 @@
                 return response.json();
             })
             .then(data => {
+                // Show a success alert before redirecting
+                alert('Subject mapping is done! Proceeding to prerequisites.');
                 window.location.href = `/pre_requisite?curriculumId=${curriculumId}`;
             })
             .catch(error => alert('An error occurred while saving.'));
@@ -664,7 +731,11 @@
             } else {
                 curriculumOverview.innerHTML = '<p class="text-gray-500 text-center mt-4">Select a curriculum from the dropdown to start mapping subjects.</p>';
                 availableSubjectsContainer.innerHTML = '<p class="text-gray-500 text-center mt-4">Select a curriculum to view subjects.</p>';
-                updateUnitTotals(); 
+                updateUnitTotals();
+                // When no curriculum is selected, hide the edit button
+                document.getElementById('editCurriculumButton').classList.add('hidden');
+                // And disable drag and drop
+                toggleEditMode(false);
             }
         });
         
@@ -691,6 +762,22 @@
                     }
                     renderAvailableSubjects(data.allSubjects, data.curriculum.subjects);
                     populateMappedSubjects(data.curriculum.subjects);
+                    
+                    // Check if the curriculum has subjects to determine the initial state
+                    const hasMappedSubjects = data.curriculum.subjects.length > 0;
+                    
+                    if (hasMappedSubjects) {
+                         // If subjects are already mapped, disable editing by default
+                        toggleEditMode(false);
+                        document.getElementById('editCurriculumButton').classList.remove('hidden');
+                    } else {
+                        // If no subjects are mapped, enable editing by default
+                        toggleEditMode(true);
+                        document.getElementById('editCurriculumButton').classList.add('hidden');
+                    }
+                    
+                    // Show the edit button since a curriculum is now loaded
+                    document.getElementById('editCurriculumButton').classList.remove('hidden');
                 })
                 .catch(error => {
                     console.error('Error fetching curriculum data:', error);
@@ -734,20 +821,18 @@
                     </div>`;
             }
             curriculumOverview.innerHTML = html;
-            initDragAndDrop();
         }
 
         function renderAvailableSubjects(subjects, mappedSubjects = []) {
             availableSubjectsContainer.innerHTML = '';
             const mappedSubjectCodes = new Set(mappedSubjects.map(s => s.subject_code));
 
-            const available = subjects.filter(s => !mappedSubjectCodes.has(s.subject_code));
-
-            if (available.length === 0) {
+            if (subjects.length === 0) {
                 availableSubjectsContainer.innerHTML = '<p class="text-gray-500 text-center mt-4">No available subjects found.</p>';
             } else {
-                available.forEach(subject => {
-                    const newSubjectCard = createSubjectCard(subject);
+                subjects.forEach(subject => {
+                    const isMapped = mappedSubjectCodes.has(subject.subject_code);
+                    const newSubjectCard = createSubjectCard(subject, isMapped);
                     availableSubjectsContainer.appendChild(newSubjectCard);
                 });
             }
@@ -758,14 +843,16 @@
                 updateUnitTotals();
                 return;
             };
+            document.querySelectorAll('.semester-dropzone .flex-wrap').forEach(el => el.innerHTML = '');
+
             subjects.forEach(subject => {
                 const dropzone = document.querySelector(`#curriculumOverview .semester-dropzone[data-year="${subject.pivot.year}"][data-semester="${subject.pivot.semester}"] .flex-wrap`);
                 if (dropzone) {
-                    const subjectTag = createSubjectTag(subject); 
+                    const subjectTag = createSubjectTag(subject, isEditing); 
                     dropzone.appendChild(subjectTag);
                 }
             });
-            updateUnitTotals(); 
+            updateUnitTotals();
         }
 
         function fetchAllSubjects() {
