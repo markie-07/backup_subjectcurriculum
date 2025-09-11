@@ -167,45 +167,46 @@
         </div>
     </div>
 
-    {{-- Modal for displaying subject details on double-click --}}
-    <div id="subjectDetailsModal" class="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-75 transition-opacity duration-300 ease-out hidden">
-        <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="relative bg-white w-full max-w-4xl rounded-2xl shadow-2xl p-6 md:p-8 transform scale-95 opacity-0 transition-all duration-300 ease-out" id="modal-details-panel">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 id="detailsSubjectName" class="text-2xl font-extrabold text-gray-800"></h2>
-                    <div class="flex items-center gap-2">
-                        <button id="editSubjectDetailsButton" class="px-4 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors shadow-sm">
+    {{-- UPDATED: Modal for displaying subject details on double-click --}}
+    <div id="subjectDetailsModal" class="fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-60 transition-opacity duration-300 ease-out hidden">
+        <div class="flex items-start justify-center min-h-screen p-4 pt-8">
+            <div class="relative bg-white w-full max-w-6xl rounded-2xl shadow-2xl transform scale-95 opacity-0 transition-all duration-300 ease-out" id="modal-details-panel">
+                <div class="flex justify-between items-center p-5 border-b border-gray-200">
+                    <h2 id="detailsSubjectName" class="text-xl font-bold text-gray-800"></h2>
+                    <div class="flex items-center gap-4">
+                        <button id="editSubjectDetailsButton" class="px-4 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors shadow-sm flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z"></path></svg>
                             Edit
                         </button>
                         <button id="closeDetailsModalButton" class="text-gray-400 hover:text-gray-600 focus:outline-none transition-colors duration-200" aria-label="Close modal">
-                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                         </button>
                     </div>
                 </div>
-                
-                <div class="space-y-4">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                <div class="p-6 max-h-[80vh] overflow-y-auto">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 mb-6">
                         <div>
-                            <p class="text-sm font-semibold text-gray-700">Subject Code:</p>
-                            <p id="detailsSubjectCode" class="text-lg text-gray-900"></p>
+                            <p class="text-sm font-medium text-gray-500">Subject Code</p>
+                            <p id="detailsSubjectCode" class="text-base font-semibold text-gray-800"></p>
                         </div>
                         <div>
-                            <p class="text-sm font-semibold text-gray-700">Type:</p>
-                            <p id="detailsSubjectType" class="text-lg text-gray-900"></p>
+                            <p class="text-sm font-medium text-gray-500">Type</p>
+                            <p id="detailsSubjectType" class="text-base font-semibold text-gray-800"></p>
                         </div>
                         <div>
-                            <p class="text-sm font-semibold text-gray-700">Unit:</p>
-                            <p id="detailsSubjectUnit" class="text-lg text-gray-900"></p>
+                            <p class="text-sm font-medium text-gray-500">Unit</p>
+                            <p id="detailsSubjectUnit" class="text-base font-semibold text-gray-800"></p>
                         </div>
                         <div id="detailsCreatedAtContainer">
-                            <p class="text-sm font-semibold text-gray-700">Created At:</p>
-                            <p id="detailsCreatedAt" class="text-lg text-gray-900"></p>
+                            <p class="text-sm font-medium text-gray-500">Created At</p>
+                            <p id="detailsCreatedAt" class="text-base font-semibold text-gray-800"></p>
                         </div>
                     </div>
+
                     <div class="space-y-2" id="detailsLessonsContainer">
-                        <h3 class="text-md font-bold text-gray-800 pt-4">Lessons</h3>
+                        <h3 class="text-xl font-bold text-gray-800 pt-4 border-t border-gray-200">Lessons</h3>
+                        {{-- JS will populate this section --}}
                     </div>
                 </div>
             </div>
@@ -253,13 +254,10 @@
             const submitButton = subjectForm.querySelector('button[type="submit"]');
             const subjectIdInput = document.getElementById('subjectId');
             
-            // Clear all week content visibility
             document.querySelectorAll('.week-content').forEach(content => content.classList.add('hidden'));
             document.querySelectorAll('.week-toggle-btn svg').forEach(svg => svg.classList.remove('rotate-180'));
 
-
             if (subjectToEdit) {
-                // EDIT MODE
                 modalTitle.textContent = 'Edit Subject';
                 submitButton.textContent = 'Update';
                 subjectIdInput.value = subjectToEdit.id;
@@ -267,9 +265,8 @@
                 document.getElementById('subjectCode').value = subjectToEdit.subject_code;
                 document.getElementById('subjectType').value = subjectToEdit.subject_type;
                 document.getElementById('subjectUnit').value = subjectToEdit.subject_unit;
-                createdTimestamp.textContent = ''; // Hide timestamp in edit mode
+                createdTimestamp.textContent = ''; 
 
-                // Populate lessons
                 for (let i = 1; i <= 15; i++) {
                     const weekKey = `Week ${i}`;
                     const weekTextarea = document.getElementById(`week-${i}-lessons`);
@@ -280,7 +277,6 @@
                     }
                 }
             } else {
-                // CREATE MODE
                 modalTitle.textContent = 'Create New Subject';
                 submitButton.textContent = 'Create';
                 subjectIdInput.value = '';
@@ -366,13 +362,11 @@
             })
             .then(data => {
                 if (isUpdating) {
-                    // Find and update the existing card
                     const updatedCard = document.getElementById(`subject-${data.subject.subject_code.toLowerCase()}`);
                     if (updatedCard) {
                         const newCard = createSubjectCard(data.subject);
                         updatedCard.replaceWith(newCard);
                     }
-                    // Update any tags in the curriculum overview
                     document.querySelectorAll(`.subject-tag`).forEach(tag => {
                         const tagData = JSON.parse(tag.dataset.subjectData);
                         if (tagData.id === data.subject.id) {
@@ -522,6 +516,7 @@
         const modalDetailsPanel = document.getElementById('modal-details-panel');
         const editSubjectDetailsButton = document.getElementById('editSubjectDetailsButton');
 
+        // UPDATED: New function to show the redesigned details modal
         const showDetailsModal = (data) => {
             document.getElementById('detailsSubjectName').textContent = `${data.subject_name} (${data.subject_code})`;
             document.getElementById('detailsSubjectCode').textContent = data.subject_code;
@@ -529,29 +524,62 @@
             document.getElementById('detailsSubjectUnit').textContent = data.subject_unit;
             editSubjectDetailsButton.dataset.subjectData = JSON.stringify(data);
 
+            const createdAtContainer = document.getElementById('detailsCreatedAtContainer');
             if (data.created_at) {
                 const date = new Date(data.created_at);
-                const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true };
+                const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true };
                 document.getElementById('detailsCreatedAt').textContent = date.toLocaleDateString('en-US', options);
-            }
-            const lessonsContainer = document.getElementById('detailsLessonsContainer');
-            lessonsContainer.innerHTML = '<h3 class="text-md font-bold text-gray-800 pt-4">Lessons</h3>';
-            if (data.lessons && Object.keys(data.lessons).length > 0) {
-                for (const week in data.lessons) {
-                    const lessonDiv = document.createElement('div');
-                    lessonDiv.classList.add('p-3', 'bg-gray-100', 'rounded-lg', 'text-sm', 'text-gray-700', 'whitespace-pre-wrap');
-                    lessonDiv.innerHTML = `<strong>${week}:</strong>\n${data.lessons[week]}`;
-                    lessonsContainer.appendChild(lessonDiv);
-                }
+                createdAtContainer.style.display = 'block';
             } else {
-                lessonsContainer.innerHTML += '<p class="text-sm text-gray-500">No lessons recorded for this subject.</p>';
+                createdAtContainer.style.display = 'none';
             }
+            
+            const lessonsContainer = document.getElementById('detailsLessonsContainer');
+            lessonsContainer.innerHTML = '<h3 class="text-xl font-bold text-gray-800 pt-4 border-t border-gray-200">Lessons</h3>';
+
+            if (data.lessons && Object.keys(data.lessons).length > 0) {
+                const sortedWeeks = Object.keys(data.lessons).sort((a, b) => parseInt(a.replace('Week ', '')) - parseInt(b.replace('Week ', '')));
+
+                sortedWeeks.forEach(week => {
+                    const lessonContent = data.lessons[week];
+                    const accordionItem = document.createElement('div');
+                    accordionItem.className = 'border border-gray-200 rounded-lg';
+
+                    const button = document.createElement('button');
+                    button.type = 'button';
+                    button.className = 'w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition-colors';
+                    button.innerHTML = `
+                        <span class="font-semibold text-gray-700">${week}</span>
+                        <svg class="w-5 h-5 text-gray-500 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    `;
+
+                    const contentDiv = document.createElement('div');
+                    contentDiv.className = 'p-5 border-t border-gray-200 hidden bg-white';
+                    
+                    let formattedContent = lessonContent.replace(/^(Learning Objectives|Detailed Lesson Content|Activities|Assessment|Total Duration):/gm, '<strong class="block mt-3 mb-1 text-gray-800">$1:</strong>');
+                    contentDiv.innerHTML = `<div class="prose prose-sm max-w-none text-gray-600 whitespace-pre-line">${formattedContent}</div>`;
+                    
+                    button.addEventListener('click', () => {
+                        contentDiv.classList.toggle('hidden');
+                        button.querySelector('svg').classList.toggle('rotate-180');
+                    });
+
+                    accordionItem.appendChild(button);
+                    accordionItem.appendChild(contentDiv);
+                    lessonsContainer.appendChild(accordionItem);
+                });
+
+            } else {
+                lessonsContainer.innerHTML += '<p class="text-sm text-gray-500 mt-2">No lessons recorded for this subject.</p>';
+            }
+
             subjectDetailsModal.classList.remove('hidden');
             setTimeout(() => {
                 subjectDetailsModal.classList.remove('opacity-0');
                 modalDetailsPanel.classList.remove('opacity-0', 'scale-95');
             }, 10);
         };
+
         const hideDetailsModal = () => {
             subjectDetailsModal.classList.add('opacity-0');
             modalDetailsPanel.classList.add('opacity-0', 'scale-95');
@@ -564,8 +592,8 @@
             const subjectData = JSON.parse(editSubjectDetailsButton.dataset.subjectData);
             hideDetailsModal();
             setTimeout(() => {
-                showSubjectModal(subjectData); // Open the other modal in edit mode
-            }, 300); // Wait for fade out animation
+                showSubjectModal(subjectData);
+            }, 300);
         });
 
         let draggedItem = null;
