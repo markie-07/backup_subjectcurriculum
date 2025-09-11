@@ -23,6 +23,8 @@ Route::post('/curriculum/remove-subject', [CurriculumController::class, 'removeS
 // Handles creation and retrieval of subjects.
 Route::get('/subjects', [SubjectController::class, 'index']);
 Route::post('/subjects', [SubjectController::class, 'store']);
+Route::put('/subjects/{id}', [SubjectController::class, 'update']);
+
 
 // --- AI Generation Routes ---
 // Manages interactions with the Google AI for content generation.

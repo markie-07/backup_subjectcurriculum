@@ -95,9 +95,15 @@ class CurriculumController extends Controller
             $curriculum = Curriculum::with('subjects')->findOrFail($id);
             $allSubjects = Subject::all(); // Always fetch all subjects
 
+            // **NEW**: Get the codes of subjects that have been removed for this curriculum
+            $removedSubjectCodes = SubjectHistory::where('curriculum_id', $id)
+                                                 ->pluck('subject_code')
+                                                 ->unique();
+
             return response()->json([
                 'curriculum' => $curriculum,
                 'allSubjects' => $allSubjects,
+                'removedSubjectCodes' => $removedSubjectCodes, // **NEW**: Pass this to the frontend
             ]);
         } catch (\Exception $e) {
             return response()->json([

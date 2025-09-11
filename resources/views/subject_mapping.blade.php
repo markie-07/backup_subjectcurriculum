@@ -72,12 +72,12 @@
         </div>
     </div>
 
-    {{-- Modal for adding a new subject --}}
+    {{-- Modal for adding/editing a new subject --}}
     <div id="addSubjectModal" class="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-75 transition-opacity duration-300 ease-out hidden">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="relative bg-white w-full max-w-6xl rounded-2xl shadow-2xl p-6 md:p-8 transform scale-95 opacity-0 transition-all duration-300 ease-out" id="modal-subject-panel">
                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-extrabold text-gray-800">Create New Subject</h2>
+                    <h2 id="modal-title" class="text-2xl font-extrabold text-gray-800">Create New Subject</h2>
                     <button id="closeSubjectModalButton" class="text-gray-400 hover:text-gray-600 focus:outline-none transition-colors duration-200" aria-label="Close modal">
                         <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -86,6 +86,8 @@
                 </div>
                 
                 <form id="subjectForm" class="space-y-6">
+                    {{-- Hidden input to store subject ID for updates --}}
+                    <input type="hidden" id="subjectId" name="subjectId">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="md:col-span-1">
                             <label for="subjectName" class="block text-sm font-semibold text-gray-700 mb-1">Subject Name</label>
@@ -171,11 +173,16 @@
             <div class="relative bg-white w-full max-w-4xl rounded-2xl shadow-2xl p-6 md:p-8 transform scale-95 opacity-0 transition-all duration-300 ease-out" id="modal-details-panel">
                 <div class="flex justify-between items-center mb-6">
                     <h2 id="detailsSubjectName" class="text-2xl font-extrabold text-gray-800"></h2>
-                    <button id="closeDetailsModalButton" class="text-gray-400 hover:text-gray-600 focus:outline-none transition-colors duration-200" aria-label="Close modal">
-                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
+                    <div class="flex items-center gap-2">
+                        <button id="editSubjectDetailsButton" class="px-4 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors shadow-sm">
+                            Edit
+                        </button>
+                        <button id="closeDetailsModalButton" class="text-gray-400 hover:text-gray-600 focus:outline-none transition-colors duration-200" aria-label="Close modal">
+                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
                 
                 <div class="space-y-4">
@@ -238,23 +245,51 @@
         const availableSubjectsContainer = document.getElementById('availableSubjects');
         const generateTopicsButton = document.getElementById('generateTopicsButton');
         const topicSpinner = document.getElementById('topicSpinner');
-
         const createdTimestamp = document.getElementById('createdTimestamp');
 
-        const showSubjectModal = () => {
-            addSubjectModal.classList.remove('hidden');
-            const now = new Date();
-            const options = {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: 'numeric',
-                minute: '2-digit',
-                second: '2-digit',
-                hour12: true
-            };
-            createdTimestamp.textContent = `Created: ${now.toLocaleDateString('en-US', options)}`;
+        const showSubjectModal = (subjectToEdit = null) => {
+            subjectForm.reset();
+            const modalTitle = document.getElementById('modal-title');
+            const submitButton = subjectForm.querySelector('button[type="submit"]');
+            const subjectIdInput = document.getElementById('subjectId');
             
+            // Clear all week content visibility
+            document.querySelectorAll('.week-content').forEach(content => content.classList.add('hidden'));
+            document.querySelectorAll('.week-toggle-btn svg').forEach(svg => svg.classList.remove('rotate-180'));
+
+
+            if (subjectToEdit) {
+                // EDIT MODE
+                modalTitle.textContent = 'Edit Subject';
+                submitButton.textContent = 'Update';
+                subjectIdInput.value = subjectToEdit.id;
+                document.getElementById('subjectName').value = subjectToEdit.subject_name;
+                document.getElementById('subjectCode').value = subjectToEdit.subject_code;
+                document.getElementById('subjectType').value = subjectToEdit.subject_type;
+                document.getElementById('subjectUnit').value = subjectToEdit.subject_unit;
+                createdTimestamp.textContent = ''; // Hide timestamp in edit mode
+
+                // Populate lessons
+                for (let i = 1; i <= 15; i++) {
+                    const weekKey = `Week ${i}`;
+                    const weekTextarea = document.getElementById(`week-${i}-lessons`);
+                    if (subjectToEdit.lessons && subjectToEdit.lessons[weekKey]) {
+                        weekTextarea.value = subjectToEdit.lessons[weekKey];
+                    } else {
+                        weekTextarea.value = '';
+                    }
+                }
+            } else {
+                // CREATE MODE
+                modalTitle.textContent = 'Create New Subject';
+                submitButton.textContent = 'Create';
+                subjectIdInput.value = '';
+                const now = new Date();
+                const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true };
+                createdTimestamp.textContent = `Created: ${now.toLocaleDateString('en-US', options)}`;
+            }
+
+            addSubjectModal.classList.remove('hidden');
             setTimeout(() => {
                 addSubjectModal.classList.remove('opacity-0');
                 subjectModalPanel.classList.remove('opacity-0', 'scale-95');
@@ -267,16 +302,10 @@
             setTimeout(() => {
                 addSubjectModal.classList.add('hidden');
                 subjectForm.reset();
-                document.querySelectorAll('.week-content').forEach(input => {
-                    input.classList.add('hidden');
-                });
-                document.querySelectorAll('.week-toggle-btn svg').forEach(svg => {
-                    svg.classList.remove('rotate-180');
-                });
             }, 300);
         };
 
-        addSubjectButton.addEventListener('click', showSubjectModal);
+        addSubjectButton.addEventListener('click', () => showSubjectModal());
         closeSubjectModalButton.addEventListener('click', hideSubjectModal);
         cancelSubjectModalButton.addEventListener('click', hideSubjectModal);
         addSubjectModal.addEventListener('click', (e) => {
@@ -290,7 +319,6 @@
                 const parent = button.parentElement;
                 const contentDiv = parent.querySelector('.week-content');
                 const svg = button.querySelector('svg');
-
                 contentDiv.classList.toggle('hidden');
                 svg.classList.toggle('rotate-180');
             });
@@ -298,6 +326,9 @@
 
         subjectForm.addEventListener('submit', (e) => {
             e.preventDefault();
+            
+            const subjectId = document.getElementById('subjectId').value;
+            const isUpdating = !!subjectId;
 
             const subjectData = {
                 subjectName: document.getElementById('subjectName').value,
@@ -314,8 +345,11 @@
                 }
             }
 
-            fetch('/api/subjects', {
-                method: 'POST',
+            const url = isUpdating ? `/api/subjects/${subjectId}` : '/api/subjects';
+            const method = isUpdating ? 'PUT' : 'POST';
+
+            fetch(url, {
+                method: method,
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
@@ -331,23 +365,38 @@
                 return response.json();
             })
             .then(data => {
-                const placeholder = availableSubjectsContainer.querySelector('p');
-                if (placeholder) {
-                    placeholder.remove();
+                if (isUpdating) {
+                    // Find and update the existing card
+                    const updatedCard = document.getElementById(`subject-${data.subject.subject_code.toLowerCase()}`);
+                    if (updatedCard) {
+                        const newCard = createSubjectCard(data.subject);
+                        updatedCard.replaceWith(newCard);
+                    }
+                    // Update any tags in the curriculum overview
+                    document.querySelectorAll(`.subject-tag`).forEach(tag => {
+                        const tagData = JSON.parse(tag.dataset.subjectData);
+                        if (tagData.id === data.subject.id) {
+                            const newTag = createSubjectTag(data.subject, isEditing);
+                            tag.replaceWith(newTag);
+                        }
+                    });
+                } else {
+                    const placeholder = availableSubjectsContainer.querySelector('p');
+                    if (placeholder) placeholder.remove();
+                    const newSubjectCard = createSubjectCard(data.subject);
+                    availableSubjectsContainer.prepend(newSubjectCard);
                 }
-                const newSubjectCard = createSubjectCard(data.subject);
-                availableSubjectsContainer.prepend(newSubjectCard);
                 hideSubjectModal();
             })
             .catch(error => {
-                console.error('Error creating subject:', error);
+                console.error('Error submitting subject:', error);
                 let errorMessage = 'An unknown error occurred. Please try again.';
                 if (error.errors) {
                     errorMessage = Object.values(error.errors).map(messages => messages.join('\n')).join('\n');
                 } else if (error.message) {
                     errorMessage = error.message;
                 }
-                alert('Could not create subject:\n\n' + errorMessage);
+                alert('Could not save subject:\n\n' + errorMessage);
             });
         });
 
@@ -471,22 +520,18 @@
         const subjectDetailsModal = document.getElementById('subjectDetailsModal');
         const closeDetailsModalButton = document.getElementById('closeDetailsModalButton');
         const modalDetailsPanel = document.getElementById('modal-details-panel');
+        const editSubjectDetailsButton = document.getElementById('editSubjectDetailsButton');
+
         const showDetailsModal = (data) => {
             document.getElementById('detailsSubjectName').textContent = `${data.subject_name} (${data.subject_code})`;
             document.getElementById('detailsSubjectCode').textContent = data.subject_code;
             document.getElementById('detailsSubjectType').textContent = data.subject_type;
             document.getElementById('detailsSubjectUnit').textContent = data.subject_unit;
+            editSubjectDetailsButton.dataset.subjectData = JSON.stringify(data);
+
             if (data.created_at) {
                 const date = new Date(data.created_at);
-                const options = {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                    hour: 'numeric',
-                    minute: '2-digit',
-                    second: '2-digit',
-                    hour12: true
-                };
+                const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true };
                 document.getElementById('detailsCreatedAt').textContent = date.toLocaleDateString('en-US', options);
             }
             const lessonsContainer = document.getElementById('detailsLessonsContainer');
@@ -515,6 +560,14 @@
         closeDetailsModalButton.addEventListener('click', hideDetailsModal);
         subjectDetailsModal.addEventListener('click', (e) => { if (e.target.id === 'subjectDetailsModal') hideDetailsModal(); });
 
+        editSubjectDetailsButton.addEventListener('click', () => {
+            const subjectData = JSON.parse(editSubjectDetailsButton.dataset.subjectData);
+            hideDetailsModal();
+            setTimeout(() => {
+                showSubjectModal(subjectData); // Open the other modal in edit mode
+            }, 300); // Wait for fade out animation
+        });
+
         let draggedItem = null;
         let subjectTagToRemove = null;
         
@@ -542,13 +595,9 @@
 
         cancelRemoveButton.addEventListener('click', hideRemoveConfirmationModal);
         
-        // =================================================================
-        // == ✨ UPDATED CODE BLOCK STARTS HERE ✨ ==
-        // =================================================================
         confirmRemoveButton.addEventListener('click', async () => {
             if (!subjectTagToRemove) return;
 
-            // Get all necessary data from the subject tag and its container
             const subjectData = JSON.parse(subjectTagToRemove.dataset.subjectData);
             const curriculumId = curriculumSelector.value;
             const dropzone = subjectTagToRemove.closest('.semester-dropzone');
@@ -556,7 +605,6 @@
             const semester = dropzone.dataset.semester;
 
             try {
-                // Call the new API endpoint to remove and log the subject
                 const response = await fetch('/api/curriculum/remove-subject', {
                     method: 'POST',
                     headers: {
@@ -566,55 +614,80 @@
                     },
                     body: JSON.stringify({
                         curriculumId: curriculumId,
-                        subjectId: subjectData.id, // Use the subject's primary ID
+                        subjectId: subjectData.id,
                         year: year,
                         semester: semester
                     })
                 });
 
                 const result = await response.json();
-
                 if (!response.ok) {
                     throw new Error(result.message || 'Failed to remove the subject.');
                 }
 
-                // --- On Success, Update the UI ---
-
-                // 1. Remove the subject tag from the semester box
                 subjectTagToRemove.remove();
 
-                // 2. Re-enable the subject card in the "Available Subjects" list
                 const originalSubjectCard = document.getElementById(`subject-${subjectData.subject_code.toLowerCase()}`);
                 if (originalSubjectCard) {
-                    originalSubjectCard.classList.remove('opacity-50', 'cursor-not-allowed', 'mapped-subject-card');
-                    originalSubjectCard.setAttribute('draggable', 'true');
+                    originalSubjectCard.classList.add('opacity-50', 'cursor-not-allowed', 'removed-subject-card');
+                    originalSubjectCard.setAttribute('draggable', 'false');
+                    originalSubjectCard.dataset.status = 'removed';
+                    
                     const statusIndicator = originalSubjectCard.querySelector('div:last-child');
-                    if(statusIndicator) {
-                        statusIndicator.innerHTML = `<svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>`;
+                    if (statusIndicator) {
+                        statusIndicator.innerHTML = `<span class="text-xs font-semibold text-red-500 bg-red-100 px-2 py-1 rounded-full">Removed</span>`;
                     }
                 }
 
-                // 3. Recalculate and display the new unit totals
                 updateUnitTotals();
-                
-                // You can replace this with a more elegant notification if you have one
                 alert('Subject removed successfully and logged to history!');
 
             } catch (error) {
                 console.error('Error removing subject:', error);
                 alert('Error: ' + error.message);
             } finally {
-                // 4. Hide the confirmation modal
                 hideRemoveConfirmationModal();
             }
         });
-        // =================================================================
-        // == ✨ UPDATED CODE BLOCK ENDS HERE ✨ ==
-        // =================================================================
-        
+
+        const createSubjectCard = (subject, isMapped = false, status = '') => {
+            const newSubjectCard = document.createElement('div');
+            newSubjectCard.id = `subject-${subject.subject_code.toLowerCase()}`;
+            newSubjectCard.dataset.subjectData = JSON.stringify(subject);
+            newSubjectCard.dataset.status = status;
+
+            let cardClasses = 'subject-card flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg transition-all';
+            let statusHTML = '<svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>';
+            let isDraggable = true;
+
+            if (isMapped) {
+                cardClasses += ' opacity-50 cursor-not-allowed mapped-subject-card';
+                statusHTML = '<span class="text-xs font-semibold text-blue-500 bg-blue-100 px-2 py-1 rounded-full">In Use</span>';
+                isDraggable = false;
+            } else if (status === 'removed') {
+                cardClasses += ' opacity-50 cursor-not-allowed removed-subject-card';
+                statusHTML = '<span class="text-xs font-semibold text-red-500 bg-red-100 px-2 py-1 rounded-full">Removed</span>';
+                isDraggable = false;
+            } else {
+                cardClasses += ' hover:bg-blue-50 cursor-grab';
+            }
+            
+            newSubjectCard.className = cardClasses;
+            newSubjectCard.setAttribute('draggable', isDraggable);
+            
+            newSubjectCard.innerHTML = `<div><p class="font-semibold text-gray-700">${subject.subject_name}</p><p class="text-xs text-gray-500">${subject.subject_code}</p><p class="text-xs text-gray-500">Unit: ${subject.subject_unit}</p></div><div class="flex items-center space-x-2">${statusHTML}</div>`;
+            
+            if(isDraggable) {
+                addDraggableEvents(newSubjectCard);
+            }
+            addDoubleClickEvents(newSubjectCard);
+            
+            return newSubjectCard;
+        };
+
         const addDraggableEvents = (item) => {
             item.addEventListener('dragstart', (e) => {
-                if (!isEditing) {
+                if (!isEditing || item.dataset.status === 'removed') {
                     e.preventDefault();
                     return;
                 }
@@ -629,18 +702,6 @@
         };
         const addDoubleClickEvents = (item) => {
             item.addEventListener('dblclick', () => showDetailsModal(JSON.parse(item.dataset.subjectData)));
-        };
-
-        const createSubjectCard = (subject, isMapped = false) => {
-            const newSubjectCard = document.createElement('div');
-            newSubjectCard.id = `subject-${subject.subject_code.toLowerCase()}`;
-            newSubjectCard.className = `subject-card flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg transition-all ${isMapped ? 'opacity-50 cursor-not-allowed mapped-subject-card' : 'hover:bg-blue-50 cursor-grab'}`;
-            newSubjectCard.setAttribute('draggable', !isMapped);
-            newSubjectCard.dataset.subjectData = JSON.stringify(subject);
-            newSubjectCard.innerHTML = `<div><p class="font-semibold text-gray-700">${subject.subject_name}</p><p class="text-xs text-gray-500">${subject.subject_code}</p><p class="text-xs text-gray-500">Unit: ${subject.subject_unit}</p></div><div class="flex items-center space-x-2">${isMapped ? '<span class="text-xs font-semibold text-blue-500 bg-blue-100 px-2 py-1 rounded-full">In Use</span>' : '<svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>'}</div>`;
-            addDraggableEvents(newSubjectCard);
-            addDoubleClickEvents(newSubjectCard);
-            return newSubjectCard;
         };
 
         const createSubjectTag = (subjectData, isEditing = false) => {
@@ -894,7 +955,7 @@
                     if (!data || !data.curriculum || !data.allSubjects) {
                         throw new Error('Invalid data structure from server.');
                     }
-                    renderAvailableSubjects(data.allSubjects, data.curriculum.subjects);
+                    renderAvailableSubjects(data.allSubjects, data.curriculum.subjects, data.removedSubjectCodes);
                     populateMappedSubjects(data.curriculum.subjects);
                     
                     const hasMappedSubjects = data.curriculum.subjects.length > 0;
@@ -954,16 +1015,20 @@
             initDragAndDrop();
         }
 
-        function renderAvailableSubjects(subjects, mappedSubjects = []) {
+        function renderAvailableSubjects(subjects, mappedSubjects = [], removedSubjectCodes = []) {
             availableSubjectsContainer.innerHTML = '';
             const mappedSubjectCodes = new Set(mappedSubjects.map(s => s.subject_code));
+            const removedCodesSet = new Set(removedSubjectCodes);
 
             if (subjects.length === 0) {
                 availableSubjectsContainer.innerHTML = '<p class="text-gray-500 text-center mt-4">No available subjects found.</p>';
             } else {
                 subjects.forEach(subject => {
                     const isMapped = mappedSubjectCodes.has(subject.subject_code);
-                    const newSubjectCard = createSubjectCard(subject, isMapped);
+                    const isRemoved = removedCodesSet.has(subject.subject_code);
+                    const status = isRemoved ? 'removed' : '';
+                    
+                    const newSubjectCard = createSubjectCard(subject, isMapped, status);
                     availableSubjectsContainer.appendChild(newSubjectCard);
                 });
             }

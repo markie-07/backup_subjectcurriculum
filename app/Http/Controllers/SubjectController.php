@@ -41,4 +41,35 @@ class SubjectController extends Controller
             'subject' => $subject,
         ], 201);
     }
+
+    /**
+     * Updates an existing subject.
+     */
+    public function update(Request $request, $id)
+    {
+        $subject = Subject::findOrFail($id);
+
+        $validated = $request->validate([
+            'subjectName' => 'required|string|max:255',
+            // Allow the same subject code for the current subject being updated
+            'subjectCode' => 'required|string|max:255|unique:subjects,subject_code,' . $subject->id,
+            'subjectType' => 'required|string|in:Major,Minor,Elective',
+            'subjectUnit' => 'required|integer',
+            'lessons' => 'nullable|array',
+        ]);
+
+        $subject->update([
+            'subject_name' => $validated['subjectName'],
+            'subject_code' => $validated['subjectCode'],
+            'subject_type' => $validated['subjectType'],
+            'subject_unit' => $validated['subjectUnit'],
+            'lessons' => $validated['lessons'],
+        ]);
+
+        return response()->json([
+            'message' => 'Subject updated successfully!',
+            'subject' => $subject,
+        ]);
+    }
 }
+
