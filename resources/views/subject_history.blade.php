@@ -18,7 +18,7 @@
                     <select id="curriculum_filter" class="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
                         <option value="{{ route('subject_history') }}">All Curriculums</option>
                         @foreach($curriculums as $curriculum)
-                            {{-- FIX: Displaying the full curriculum details in the dropdown --}}
+                            {{-- UPDATE: Displaying the full curriculum details in the dropdown --}}
                             <option value="{{ route('subject_history', ['curriculum_id' => $curriculum->id]) }}"
                                     {{ request('curriculum_id') == $curriculum->id ? 'selected' : '' }}>
                                 {{ $curriculum->year_level }}: {{ $curriculum->program_code }} {{ $curriculum->curriculum_name }} ({{ $curriculum->academic_year }})
@@ -43,41 +43,45 @@
         {{-- History Records Cards --}}
         <div id="history-records-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @forelse($history as $record)
-            <div class="history-record bg-white p-5 rounded-xl shadow-lg transition-all hover:shadow-2xl hover:-translate-y-1">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <p class="font-bold text-lg text-gray-800">{{ $record->subject_name }}</p>
-                        <p class="text-sm text-gray-500">{{ $record->subject_code }}</p>
+            <div class="history-record bg-white p-5 rounded-xl shadow-lg transition-all hover:shadow-2xl hover:-translate-y-1 flex flex-col">
+                <div class="flex-grow">
+                     <div class="flex justify-between items-start">
+                        <div>
+                            <p class="font-bold text-lg text-gray-800">{{ $record->subject_name }}</p>
+                            <p class="text-sm text-gray-500">{{ $record->subject_code }}</p>
+                        </div>
+                        <span class="text-xs font-semibold bg-red-100 text-red-700 px-2 py-1 rounded-full">Removed</span>
                     </div>
-                    <span class="text-xs font-semibold bg-red-100 text-red-700 px-2 py-1 rounded-full">Removed</span>
-                </div>
 
-                <div class="mt-4 space-y-3 border-t border-gray-100 pt-4">
-                    {{-- FIX: Corrected Curriculum and added Academic Year display --}}
-                    <div class="flex items-center text-sm">
-                        <svg class="w-4 h-4 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h6m-6 4h6m-6 4h6"></path></svg>
-                        <span class="font-medium text-gray-600">Curriculum:</span>
-                        <span class="text-gray-800 ml-1">{{ $record->curriculum->year_level }}: {{ $record->curriculum->program_code }} {{ $record->curriculum->curriculum_name }}</span>
-                    </div>
-                    <div class="flex items-center text-sm">
-                        <svg class="w-4 h-4 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                        <span class="font-medium text-gray-600">Academic Year:</span>
-                        <span class="text-gray-800 ml-1">({{ $record->academic_year }})</span>
-                    </div>
-                    <div class="flex items-center text-sm">
-                        <svg class="w-4 h-4 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                        <span class="font-medium text-gray-600">Date Removed:</span>
-                        <span class="text-gray-800 ml-1">{{ $record->created_at->format('M d, Y') }}</span>
-                    </div>
-                     <div class="flex items-center text-sm">
-                        <svg class="w-4 h-4 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"></path></svg>
-                        <span class="font-medium text-gray-600">Original Placement:</span>
-                        <span class="text-gray-800 ml-1">{{ $record->year }} Year, {{ $record->semester == 1 ? '1st Sem' : '2nd Sem' }}</span>
+                    <div class="mt-4 space-y-3 border-t border-gray-100 pt-4">
+                        {{-- UPDATE: Corrected Curriculum and added Academic Year display --}}
+                        <div class="flex items-center text-sm">
+                            <svg class="w-4 h-4 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h6m-6 4h6m-6 4h6"></path></svg>
+                            <span class="font-medium text-gray-600">Curriculum:</span>
+                            <span class="text-gray-800 ml-1">{{ $record->curriculum->year_level }}: {{ $record->curriculum->program_code }} {{ $record->curriculum->curriculum_name }}</span>
+                        </div>
+                        <div class="flex items-center text-sm">
+                            <svg class="w-4 h-4 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            <span class="font-medium text-gray-600">Academic Year:</span>
+                            <span class="text-gray-800 ml-1">({{ $record->academic_year }})</span>
+                        </div>
+                        <div class="flex items-center text-sm">
+                            <svg class="w-4 h-4 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            <span class="font-medium text-gray-600">Date Removed:</span>
+                            <span class="text-gray-800 ml-1">{{ $record->created_at->format('M d, Y') }}</span>
+                        </div>
+                         <div class="flex items-center text-sm">
+                            <svg class="w-4 h-4 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"></path></svg>
+                            <span class="font-medium text-gray-600">Original Placement:</span>
+                            <span class="text-gray-800 ml-1">{{ $record->year }} Year, {{ $record->semester == 1 ? '1st Sem' : '2nd Sem' }}</span>
+                        </div>
                     </div>
                 </div>
 
                 <div class="mt-5 pt-4 border-t border-gray-100 flex justify-end gap-3">
                     <button class="view-details-btn text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors" data-details="{{ json_encode($record->subject) }}">View Details</button>
+                    {{-- NEW: Export Button Added --}}
+                    <button class="export-btn text-sm font-bold text-white bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg transition-all shadow-md hover:shadow-lg" data-subject="{{ json_encode($record->subject) }}">Export</button>
                     <button class="retrieve-btn text-sm font-bold text-white bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg transition-all shadow-md hover:shadow-lg" data-id="{{ $record->id }}">Retrieve</button>
                 </div>
             </div>
@@ -96,7 +100,7 @@
 
 {{-- Modal for Retrieve Confirmation --}}
 <div id="retrieveConfirmationModal" class="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-75 hidden">
-    <div class="flex items-center justify-center min-h-screen p-4">
+     <div class="flex items-center justify-center min-h-screen p-4">
         <div class="relative bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 text-center">
             <div class="w-12 h-12 rounded-full bg-purple-100 p-2 flex items-center justify-center mx-auto mb-4">
                 <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h5M7 7l9 9M20 20v-5h-5"></path></svg>
@@ -110,6 +114,24 @@
         </div>
     </div>
 </div>
+
+{{-- NEW: Modal for Export Confirmation --}}
+<div id="exportConfirmationModal" class="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-75 hidden">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="relative bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 text-center">
+            <div class="w-12 h-12 rounded-full bg-green-100 p-2 flex items-center justify-center mx-auto mb-4">
+                 <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-800">Export Subject to PDF</h3>
+            <p class="text-sm text-gray-500 mt-2">Are you sure you want to download a PDF file of this subject's details and lessons?</p>
+            <div class="mt-6 flex justify-center gap-4">
+                <button id="cancelExportButton" class="w-full px-6 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200">Cancel</button>
+                <button id="confirmExportButton" class="w-full px-6 py-2.5 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700">Yes, Export</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 {{-- Modal for Viewing Subject Details (Consistent with subject_mapping.blade.php) --}}
 <div id="subjectDetailsModal" class="fixed inset-0 z-[60] overflow-y-auto bg-black bg-opacity-60 hidden">
@@ -179,6 +201,84 @@ document.addEventListener('DOMContentLoaded', () => {
             hideRetrieveModal();
         }
     });
+
+    // --- NEW: Export Modal and PDF Generation Logic ---
+    const exportModal = document.getElementById('exportConfirmationModal');
+    const cancelExportButton = document.getElementById('cancelExportButton');
+    const confirmExportButton = document.getElementById('confirmExportButton');
+    let subjectToExport = null;
+
+    document.querySelectorAll('.export-btn').forEach(button => {
+        button.addEventListener('click', (e) => {
+            subjectToExport = JSON.parse(e.currentTarget.dataset.subject);
+            exportModal.classList.remove('hidden');
+        });
+    });
+
+    const hideExportModal = () => {
+        exportModal.classList.add('hidden');
+        subjectToExport = null;
+    };
+
+    cancelExportButton.addEventListener('click', hideExportModal);
+    exportModal.addEventListener('click', (e) => { if (e.target === exportModal) hideExportModal(); });
+    
+    confirmExportButton.addEventListener('click', () => {
+        if (!subjectToExport) return;
+        generatePDF(subjectToExport);
+        hideExportModal();
+    });
+
+    const generatePDF = (subject) => {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        // Title
+        doc.setFontSize(20);
+        doc.setFont("helvetica", "bold");
+        doc.text("Subject Syllabus", 105, 20, null, null, "center");
+
+        // Subject Details Table
+        const detailsData = [
+            ['Subject Name:', subject.subject_name],
+            ['Subject Code:', subject.subject_code],
+            ['Subject Type:', subject.subject_type],
+            ['Units:', subject.subject_unit.toString()]
+        ];
+        
+        doc.autoTable({
+            startY: 30,
+            head: [['Attribute', 'Value']],
+            body: detailsData,
+            theme: 'grid',
+            headStyles: { fillColor: [22, 160, 133] },
+            styles: { fontSize: 12 },
+        });
+
+        // Lessons Table
+        const lessonsData = [];
+        if (subject.lessons) {
+            for (let i = 1; i <= 15; i++) {
+                const week = `Week ${i}`;
+                lessonsData.push([week, subject.lessons[week] || 'N/A']);
+            }
+        }
+        
+        doc.autoTable({
+            startY: doc.lastAutoTable.finalY + 15,
+            head: [['Week', 'Lesson / Topics']],
+            body: lessonsData,
+            theme: 'grid',
+            headStyles: { fillColor: [44, 62, 80] },
+            styles: { fontSize: 10, cellPadding: 3 },
+            columnStyles: {
+                0: { cellWidth: 25 },
+                1: { cellWidth: 'auto' }
+            }
+        });
+
+        doc.save(`${subject.subject_code}_${subject.subject_name}_Syllabus.pdf`);
+    };
 
     // --- Details Modal Logic ---
     const detailsModal = document.getElementById('subjectDetailsModal');
