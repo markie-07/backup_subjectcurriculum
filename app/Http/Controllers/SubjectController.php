@@ -41,6 +41,14 @@ class SubjectController extends Controller
             'subject' => $subject,
         ], 201);
     }
+    
+    /**
+     * Retrieves a single subject.
+     */
+    public function show($id)
+    {
+        return response()->json(Subject::findOrFail($id));
+    }
 
     /**
      * Updates an existing subject.
@@ -72,4 +80,3 @@ class SubjectController extends Controller
         ]);
     }
 }
-
