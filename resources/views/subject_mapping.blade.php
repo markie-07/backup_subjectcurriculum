@@ -10,7 +10,7 @@
                 <p class="text-sm text-gray-500 mt-1">Drag and drop subjects to build the curriculum.</p>
             </div>
             <button id="addSubjectButton" class="w-full sm:w-auto flex items-center justify-center space-x-2 px-4 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800 transition-colors shadow-md">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                 <span>Add New Subject</span>
             </button>
         </div>
@@ -26,7 +26,7 @@
                 <div class="flex flex-col sm:flex-row gap-3 my-4">
                     <div class="relative flex-grow">
                         <input type="text" id="searchInput" class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition" placeholder="Search subject...">
-                        <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                     </div>
                     <select id="typeFilter" class="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
                         <option value="All Types">All Types</option>
@@ -72,21 +72,22 @@
         </div>
     </div>
 
-    {{-- Modal for adding/editing a new subject --}}
+    {{-- 
+    START OF CHANGES: Redesigned modal for adding/editing a new subject 
+    --}}
     <div id="addSubjectModal" class="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-75 transition-opacity duration-300 ease-out hidden">
-        <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="relative bg-white w-full max-w-6xl rounded-2xl shadow-2xl p-6 md:p-8 transform scale-95 opacity-0 transition-all duration-300 ease-out" id="modal-subject-panel">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 id="modal-title" class="text-2xl font-extrabold text-gray-800">Create New Subject</h2>
-                    <button id="closeSubjectModalButton" class="text-gray-400 hover:text-gray-600 focus:outline-none transition-colors duration-200" aria-label="Close modal">
-                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
+        <div class="flex items-start justify-center min-h-screen p-4 pt-8">
+            <form id="subjectForm" class="relative bg-white w-full max-w-6xl rounded-2xl shadow-2xl transform scale-95 opacity-0 transition-all duration-300 ease-out flex flex-col" id="modal-subject-panel">
+                {{-- HEADER --}}
+                <div class="flex justify-between items-center p-5 border-b border-gray-200">
+                    <h2 id="modal-title" class="text-xl font-bold text-gray-800">Create New Subject</h2>
+                    <button id="closeSubjectModalButton" type="button" class="text-gray-400 hover:text-gray-600 focus:outline-none transition-colors duration-200" aria-label="Close modal">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
                 </div>
-                
-                <form id="subjectForm" class="space-y-6">
-                    {{-- Hidden input to store subject ID for updates --}}
+
+                {{-- BODY (Scrollable) --}}
+                <div class="p-6 max-h-[75vh] overflow-y-auto space-y-6">
                     <input type="hidden" id="subjectId" name="subjectId">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="md:col-span-1">
@@ -107,15 +108,13 @@
                             </select>
                         </div>
                     </div>
-
                     <div>
                         <label for="subjectUnit" class="block text-sm font-semibold text-gray-700 mb-1">Unit</label>
                         <input type="number" id="subjectUnit" name="subjectUnit" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" required>
                     </div>
-                    
                     <div class="space-y-2">
                         <div class="flex justify-between items-center">
-                            <h3 class="text-sm font-semibold text-gray-700">Weekly Topics</h3>
+                            <h3 class="text-lg font-bold text-gray-800 pt-4 border-t border-gray-200">Weekly Topics</h3>
                             <button type="button" id="generateTopicsButton" class="px-4 py-2 text-sm font-semibold text-white bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors">
                                 AI Topic Generator
                             </button>
@@ -131,12 +130,12 @@
                             <p class="text-sm text-gray-500 mt-2">Generating weekly topics, please wait...</p>
                         </div>
                         @for ($i = 1; $i <= 15; $i++)
-                        <div>
-                            <button type="button" class="week-toggle-btn w-full flex justify-between items-center p-3 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors" data-week="{{ $i }}">
-                                <span class="font-medium text-gray-700">Week {{ $i }}</span>
-                                <svg class="w-5 h-5 text-gray-500 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        <div class="border border-gray-200 rounded-lg">
+                            <button type="button" class="week-toggle-btn w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition-colors" data-week="{{ $i }}">
+                                <span class="font-semibold text-gray-700">Week {{ $i }}</span>
+                                <svg class="w-5 h-5 text-gray-500 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                             </button>
-                            <div class="week-content hidden mt-2 p-3 border border-gray-200 rounded-lg">
+                            <div class="week-content hidden p-5 border-t border-gray-200 bg-white">
                                 <textarea id="week-{{ $i }}-lessons" name="week-{{ $i }}-lessons" class="w-full h-24 p-3 border border-gray-300 rounded-lg resize-y focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors font-mono text-sm" style="min-height: 5rem;" placeholder="Topic for Week {{ $i }}..."></textarea>
                                 <div class="flex justify-end mt-2">
                                     <button type="button" class="generate-lesson-btn px-3 py-1.5 text-xs font-semibold text-white bg-green-600 hover:bg-green-700 rounded-md transition-colors" data-week="{{ $i }}">
@@ -150,41 +149,40 @@
                         </div>
                         @endfor
                     </div>
+                </div>
 
-                    <div class="pt-4 flex justify-between gap-3">
-                        <div id="createdTimestamp" class="text-sm text-gray-500 self-center"></div>
-                        <div class="flex gap-3">
-                            <button type="button" id="cancelSubjectModalButton" class="px-6 py-3 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors">
-                                Cancel
-                            </button>
-                            <button type="submit" class="px-6 py-3 rounded-lg text-sm font-semibold text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
-                                Create
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    {{-- UPDATED: Modal for displaying subject details on double-click --}}
-    <div id="subjectDetailsModal" class="fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-60 transition-opacity duration-300 ease-out hidden">
-        <div class="flex items-start justify-center min-h-screen p-4 pt-8">
-            <div class="relative bg-white w-full max-w-6xl rounded-2xl shadow-2xl transform scale-95 opacity-0 transition-all duration-300 ease-out" id="modal-details-panel">
-                <div class="flex justify-between items-center p-5 border-b border-gray-200">
-                    <h2 id="detailsSubjectName" class="text-xl font-bold text-gray-800"></h2>
+                {{-- FOOTER --}}
+                <div class="flex justify-between items-center p-5 mt-auto border-t border-gray-200 bg-gray-50 rounded-b-2xl">
+                    <div id="createdTimestamp" class="text-sm text-gray-500 self-center"></div>
                     <div class="flex items-center gap-4">
-                        <button id="editSubjectDetailsButton" class="px-4 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors shadow-sm flex items-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z"></path></svg>
-                            Edit
+                        <button type="button" id="cancelSubjectModalButton" class="px-6 py-3 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors">
+                            Cancel
                         </button>
-                        <button id="closeDetailsModalButton" class="text-gray-400 hover:text-gray-600 focus:outline-none transition-colors duration-200" aria-label="Close modal">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        <button type="submit" class="px-6 py-3 rounded-lg text-sm font-semibold text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                            Create Subject
                         </button>
                     </div>
                 </div>
+            </form>
+        </div>
+    </div>
+    {{-- END OF CHANGES --}}
 
-                <div class="p-6 max-h-[80vh] overflow-y-auto">
+    {{-- Modal for displaying subject details on double-click --}}
+    <div id="subjectDetailsModal" class="fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-60 transition-opacity duration-300 ease-out hidden">
+        <div class="flex items-start justify-center min-h-screen p-4 pt-8">
+            <div class="relative bg-white w-full max-w-6xl rounded-2xl shadow-2xl transform scale-95 opacity-0 transition-all duration-300 ease-out flex flex-col" id="modal-details-panel">
+                {{-- HEADER: Now only contains the title and close button --}}
+                <div class="flex justify-between items-center p-5 border-b border-gray-200">
+                    <h2 id="detailsSubjectName" class="text-xl font-bold text-gray-800"></h2>
+                    <button id="closeDetailsModalButton" class="text-gray-400 hover:text-gray-600 focus:outline-none transition-colors duration-200" aria-label="Close modal">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+
+                {{-- BODY: Main content area (scrollable) --}}
+                <div class="p-6 max-h-[75vh] overflow-y-auto">
+                    {{-- Grid for Subject Details, "Created At" is now removed from here --}}
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 mb-6">
                         <div>
                             <p class="text-sm font-medium text-gray-500">Subject Code</p>
@@ -198,15 +196,29 @@
                             <p class="text-sm font-medium text-gray-500">Unit</p>
                             <p id="detailsSubjectUnit" class="text-base font-semibold text-gray-800"></p>
                         </div>
-                        <div id="detailsCreatedAtContainer">
-                            <p class="text-sm font-medium text-gray-500">Created At</p>
-                            <p id="detailsCreatedAt" class="text-base font-semibold text-gray-800"></p>
-                        </div>
                     </div>
 
                     <div class="space-y-2" id="detailsLessonsContainer">
                         <h3 class="text-xl font-bold text-gray-800 pt-4 border-t border-gray-200">Lessons</h3>
                         {{-- JS will populate this section --}}
+                    </div>
+                </div>
+                
+                {{-- FOOTER: New section for buttons and timestamp --}}
+                <div class="flex justify-between items-center p-5 mt-auto border-t border-gray-200 bg-gray-50 rounded-b-2xl">
+                    <div id="detailsCreatedAtContainer">
+                        <p class="text-sm font-medium text-gray-500">Created At</p>
+                        <p id="detailsCreatedAt" class="text-base font-semibold text-gray-800"></p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <button id="importSubjectDetailsButton" class="px-4 py-2 text-sm font-semibold text-white bg-green-600 hover:bg-green-700 rounded-lg transition-colors shadow-sm flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                            Import
+                        </button>
+                        <button id="editSubjectDetailsButton" class="px-4 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors shadow-sm flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z"></path></svg>
+                            Edit
+                        </button>
                     </div>
                 </div>
             </div>
@@ -231,7 +243,24 @@
             </div>
         </div>
     </div>
-    
+    {{-- NEW: Confirmation Modal for Subject Import --}}
+    <div id="importConfirmationModal" class="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-75 transition-opacity duration-300 ease-out hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="relative bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 text-center transform scale-95 opacity-0 transition-all duration-300 ease-out" id="import-modal-panel">
+                <div class="w-12 h-12 rounded-full bg-green-100 p-2 flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800">Import Subject</h3>
+                <p class="text-sm text-gray-500 mt-2">Are you sure you want to import this subject as a PDF file?</p>
+                <div class="mt-6 flex justify-center gap-4">
+                    <button id="cancelImportButton" class="w-full px-6 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all">Cancel</button>
+                    <button id="confirmImportButton" class="w-full px-6 py-2.5 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition-all">Yes, Import</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </main>
 
 <script>
@@ -241,7 +270,6 @@
         const addSubjectModal = document.getElementById('addSubjectModal');
         const closeSubjectModalButton = document.getElementById('closeSubjectModalButton');
         const cancelSubjectModalButton = document.getElementById('cancelSubjectModalButton');
-        const subjectModalPanel = document.getElementById('modal-subject-panel');
         const subjectForm = document.getElementById('subjectForm');
         const availableSubjectsContainer = document.getElementById('availableSubjects');
         const generateTopicsButton = document.getElementById('generateTopicsButton');
@@ -259,7 +287,7 @@
 
             if (subjectToEdit) {
                 modalTitle.textContent = 'Edit Subject';
-                submitButton.textContent = 'Update';
+                submitButton.textContent = 'Update Subject';
                 subjectIdInput.value = subjectToEdit.id;
                 document.getElementById('subjectName').value = subjectToEdit.subject_name;
                 document.getElementById('subjectCode').value = subjectToEdit.subject_code;
@@ -278,7 +306,7 @@
                 }
             } else {
                 modalTitle.textContent = 'Create New Subject';
-                submitButton.textContent = 'Create';
+                submitButton.textContent = 'Create Subject';
                 subjectIdInput.value = '';
                 const now = new Date();
                 const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true };
@@ -288,13 +316,13 @@
             addSubjectModal.classList.remove('hidden');
             setTimeout(() => {
                 addSubjectModal.classList.remove('opacity-0');
-                subjectModalPanel.classList.remove('opacity-0', 'scale-95');
+                subjectForm.classList.remove('opacity-0', 'scale-95');
             }, 10);
         };
 
         const hideSubjectModal = () => {
             addSubjectModal.classList.add('opacity-0');
-            subjectModalPanel.classList.add('opacity-0', 'scale-95');
+            subjectForm.classList.add('opacity-0', 'scale-95');
             setTimeout(() => {
                 addSubjectModal.classList.add('hidden');
                 subjectForm.reset();
@@ -515,14 +543,97 @@
         const closeDetailsModalButton = document.getElementById('closeDetailsModalButton');
         const modalDetailsPanel = document.getElementById('modal-details-panel');
         const editSubjectDetailsButton = document.getElementById('editSubjectDetailsButton');
+        const importSubjectDetailsButton = document.getElementById('importSubjectDetailsButton');
+        const importConfirmationModal = document.getElementById('importConfirmationModal');
+        const importModalPanel = document.getElementById('import-modal-panel');
+        const cancelImportButton = document.getElementById('cancelImportButton');
+        const confirmImportButton = document.getElementById('confirmImportButton');
+        let subjectToImport = null;
 
-        // UPDATED: New function to show the redesigned details modal
+        importSubjectDetailsButton.addEventListener('click', () => {
+            subjectToImport = JSON.parse(importSubjectDetailsButton.dataset.subjectData);
+            importConfirmationModal.classList.remove('hidden');
+            setTimeout(() => {
+                importConfirmationModal.classList.remove('opacity-0');
+                importModalPanel.classList.remove('opacity-0', 'scale-95');
+            }, 10);
+        });
+
+        const hideImportConfirmationModal = () => {
+            importConfirmationModal.classList.add('opacity-0');
+            importModalPanel.classList.add('opacity-0', 'scale-95');
+            setTimeout(() => {
+                importConfirmationModal.classList.add('hidden');
+                subjectToImport = null;
+            }, 300);
+        };
+        cancelImportButton.addEventListener('click', hideImportConfirmationModal);
+        
+        confirmImportButton.addEventListener('click', () => {
+            if (subjectToImport) {
+                generatePDF(subjectToImport);
+            }
+            hideImportConfirmationModal();
+        });
+
+        const generatePDF = (subject) => {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Title
+            doc.setFontSize(20);
+            doc.setFont("helvetica", "bold");
+            doc.text("Subject Syllabus", 105, 20, null, null, "center");
+
+            // Subject Details Table
+            const detailsData = [
+                ['Subject Name:', subject.subject_name],
+                ['Subject Code:', subject.subject_code],
+                ['Subject Type:', subject.subject_type],
+                ['Units:', subject.subject_unit.toString()]
+            ];
+            
+            doc.autoTable({
+                startY: 30,
+                head: [['Attribute', 'Value']],
+                body: detailsData,
+                theme: 'grid',
+                headStyles: { fillColor: [22, 160, 133] },
+                styles: { fontSize: 12 },
+            });
+
+            // Lessons Table
+            const lessonsData = [];
+            if (subject.lessons) {
+                for (let i = 1; i <= 15; i++) {
+                    const week = `Week ${i}`;
+                    lessonsData.push([week, subject.lessons[week] || 'N/A']);
+                }
+            }
+            
+            doc.autoTable({
+                startY: doc.lastAutoTable.finalY + 15,
+                head: [['Week', 'Lesson / Topics']],
+                body: lessonsData,
+                theme: 'grid',
+                headStyles: { fillColor: [44, 62, 80] },
+                styles: { fontSize: 10, cellPadding: 3 },
+                columnStyles: {
+                    0: { cellWidth: 25 },
+                    1: { cellWidth: 'auto' }
+                }
+            });
+
+            doc.save(`${subject.subject_code}_${subject.subject_name}_Syllabus.pdf`);
+        };
+
         const showDetailsModal = (data) => {
             document.getElementById('detailsSubjectName').textContent = `${data.subject_name} (${data.subject_code})`;
             document.getElementById('detailsSubjectCode').textContent = data.subject_code;
             document.getElementById('detailsSubjectType').textContent = data.subject_type;
             document.getElementById('detailsSubjectUnit').textContent = data.subject_unit;
             editSubjectDetailsButton.dataset.subjectData = JSON.stringify(data);
+            importSubjectDetailsButton.dataset.subjectData = JSON.stringify(data);
 
             const createdAtContainer = document.getElementById('detailsCreatedAtContainer');
             if (data.created_at) {
