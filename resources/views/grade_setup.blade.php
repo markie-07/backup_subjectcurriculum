@@ -12,21 +12,16 @@
 
 <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-4 sm:p-6 md:p-8">
     <div class="container mx-auto">
-        <!-- Page Header -->
-        <div class="mb-8">
-            <h1 class="text-4xl font-extrabold text-gray-800">Grade Scheme Setup</h1>
-            <p class="text-base text-gray-500 mt-1">Design and manage grading component weights for subjects.</p>
-        </div>
 
-        <!-- Main Content Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
             
-            <!-- Left Column: Configuration Form -->
-            <div class="lg:col-span-3 bg-white/70 backdrop-blur-xl p-6 md:p-8 rounded-2xl shadow-lg border border-gray-200/80">
+            <div class="lg:col-span-2 bg-white/70 backdrop-blur-xl p-6 md:p-8 rounded-2xl shadow-lg border border-gray-200/80">
                 <form id="grade-setup-form">
-                    <!-- Section 1: Subject Selection -->
                     <div class="mb-8">
-                        <div class="flex items-center gap-3 border-b border-gray-200 pb-3 mb-4">
+                        <h1 class="text-2xl font-bold text-gray-800">Grade Scheme Setup</h1>
+                        <p class="text-sm text-gray-600 mt-1">Design and manage grading component weights for subjects.</p>
+                        
+                        <div class="flex items-center gap-3 border-b border-gray-200 pb-3 my-4">
                             <div class="w-10 h-10 flex-shrink-0 bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
                             </div>
@@ -45,7 +40,6 @@
                         </div>
                     </div>
 
-                    <!-- Section 2: Grade Components -->
                     <div>
                         <div class="flex items-center gap-3 border-b border-gray-200 pb-3 mb-6">
                            <div class="w-10 h-10 flex-shrink-0 bg-teal-100 text-teal-600 rounded-lg flex items-center justify-center">
@@ -63,7 +57,6 @@
                         <div class="mt-6 flex justify-center items-center p-4 bg-gray-100 rounded-lg"><div class="relative w-24 h-24"><svg class="w-full h-full" viewBox="0 0 100 100"><circle class="text-gray-200" stroke-width="10" stroke="currentColor" fill="transparent" r="45" cx="50" cy="50" /><circle id="progress-circle" class="progress-ring__circle text-indigo-500" stroke-width="10" stroke-linecap="round" stroke="currentColor" fill="transparent" r="45" cx="50" cy="50" /></svg><div class="absolute inset-0 flex items-center justify-center"><span id="total-weight" class="text-2xl font-bold text-gray-700">100%</span></div></div><p class="ml-4 font-semibold text-gray-600">Total Weight</p></div>
                     </div>
 
-                    <!-- Action Button -->
                     <div class="mt-10 pt-6 border-t border-gray-200">
                         <button id="add-grade-btn" type="button" class="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-600 to-blue-500 hover:from-indigo-700 hover:to-blue-600 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed disabled:shadow-md">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd" /></svg>
@@ -72,9 +65,37 @@
                     </div>
                 </form>
             </div>
+            
+            <div class="lg:col-span-1 bg-white/70 backdrop-blur-xl p-6 md:p-8 rounded-2xl shadow-lg border border-gray-200/80">
+                <h2 class="text-xl font-bold text-gray-700 mb-4 pb-3 border-b">Grading Scale</h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left text-gray-500">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-100">
+                            <tr>
+                                <th scope="col" class="px-4 py-3">Description</th>
+                                <th scope="col" class="px-4 py-3">Numerical</th>
+                                <th scope="col" class="px-4 py-3">Percentage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white border-b"><td class="px-4 py-2">Excellent</td><td class="px-4 py-2">1.00</td><td class="px-4 py-2">98–100</td></tr>
+                            <tr class="bg-gray-50 border-b"><td class="px-4 py-2">Very Good</td><td class="px-4 py-2">1.25</td><td class="px-4 py-2">95–97</td></tr>
+                            <tr class="bg-white border-b"><td class="px-4 py-2"></td><td class="px-4 py-2">1.50</td><td class="px-4 py-2">92–94</td></tr>
+                            <tr class="bg-gray-50 border-b"><td class="px-4 py-2">Good</td><td class="px-4 py-2">1.75</td><td class="px-4 py-2">89–91</td></tr>
+                            <tr class="bg-white border-b"><td class="px-4 py-2"></td><td class="px-4 py-2">2.00</td><td class="px-4 py-2">86–88</td></tr>
+                            <tr class="bg-gray-50 border-b"><td class="px-4 py-2">Satisfactory</td><td class="px-4 py-2">2.25</td><td class="px-4 py-2">83–85</td></tr>
+                            <tr class="bg-white border-b"><td class="px-4 py-2"></td><td class="px-4 py-2">2.50</td><td class="px-4 py-2">80–82</td></tr>
+                            <tr class="bg-gray-50 border-b"><td class="px-4 py-2">Fair</td><td class="px-4 py-2">2.75</td><td class="px-4 py-2">77–79</td></tr>
+                            <tr class="bg-white border-b"><td class="px-4 py-2">Passed</td><td class="px-4 py-2">3.00</td><td class="px-4 py-2">75–76</td></tr>
+                            <tr class="bg-gray-50 border-b"><td class="px-4 py-2">Failed</td><td class="px-4 py-2">5.00</td><td class="px-4 py-2">74 & below</td></tr>
+                            <tr class="bg-white border-b"><td class="px-4 py-2">*No Grade</td><td class="px-4 py-2">NG</td><td class="px-4 py-2">–</td></tr>
+                            <tr class="bg-gray-50"><td class="px-4 py-2">Dropped</td><td class="px-4 py-2">DRP</td><td class="px-4 py-2">–</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
-            <!-- Right Column: Existing Grades -->
-            <div class="lg:col-span-2 bg-white/70 backdrop-blur-xl p-6 md:p-8 rounded-2xl shadow-lg border border-gray-200/80">
+            <div class="lg:col-span-1 bg-white/70 backdrop-blur-xl p-6 md:p-8 rounded-2xl shadow-lg border border-gray-200/80">
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-4">
                     <h2 class="text-xl font-bold text-gray-700 mb-4 sm:mb-0">Existing Setups</h2>
                     <div class="relative w-full sm:w-auto"><svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" /></svg><input type="text" id="search-input" placeholder="Search..." class="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"></div>
@@ -87,16 +108,20 @@
     </div>
 </main>
 
-<!-- Modal for displaying grade details -->
 <div id="gradeDetailModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm hidden">
     <div class="bg-white p-6 md:p-8 rounded-2xl shadow-2xl w-full max-w-lg mx-4 transform scale-95 opacity-0 transition-all border border-gray-200/80">
         <div class="flex justify-between items-start pb-4 mb-6 border-b border-gray-200"><div class="flex items-center gap-4"><div class="w-12 h-12 flex-shrink-0 bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg></div><div><h3 class="text-xl font-bold text-gray-800" id="modalSubjectTitle"></h3><p class="text-sm text-gray-500" id="modalSubjectCode"></p></div></div><button id="closeModalBtn" class="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition-colors"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></button></div>
-        <div class="space-y-3 text-base"><div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg border"><span class="font-semibold text-gray-600">AAE:</span> <span id="modalAae" class="font-bold text-gray-800 text-lg"></span></div><div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg border"><span class="font-semibold text-gray-600">Evaluation:</span> <span id="modalEvaluation" class="font-bold text-gray-800 text-lg"></span></div><div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg border"><span class="font-semibold text-gray-600">Assignment:</span> <span id="modalAssignment" class="font-bold text-gray-800 text-lg"></span></div><div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg border"><span class="font-semibold text-gray-600">Exam:</span> <span id="modalExam" class="font-bold text-gray-800 text-lg"></span></div></div>
+        <div class="space-y-3 text-base">
+            <div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg border"><span class="font-semibold text-gray-600">AAE:</span> <span id="modalAae" class="font-bold text-gray-800 text-lg"></span></div>
+            <div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg border"><span class="font-semibold text-gray-600">Evaluation:</span> <span id="modalEvaluation" class="font-bold text-gray-800 text-lg"></span></div>
+            <div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg border"><span class="font-semibold text-gray-600">Assignment:</span> <span id="modalAssignment" class="font-bold text-gray-800 text-lg"></span></div>
+            <div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg border"><span class="font-semibold text-gray-600">Exam:</span> <span id="modalExam" class="font-bold text-gray-800 text-lg"></span></div>
+            <div class="flex justify-between items-center p-4 bg-indigo-50 rounded-lg border border-indigo-200"><span class="font-semibold text-indigo-600">Total Grade:</span> <span id="modalTotal" class="font-bold text-indigo-800 text-lg"></span></div>
+        </div>
         <div class="mt-8 pt-6 border-t border-gray-200 flex justify-end"><button id="editGradeSchemeBtn" type="button" class="flex items-center justify-center gap-2 bg-white hover:bg-gray-100 text-gray-700 font-semibold py-2 px-4 rounded-lg transition-all duration-300 border border-gray-300 shadow-sm"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" /><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" /></svg>Edit Scheme</button></div>
     </div>
 </div>
 
-<!-- Success Modal -->
 <div id="successModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm hidden">
     <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-sm mx-4 text-center transform scale-95 opacity-0 transition-all border border-gray-200/80">
         <div class="w-16 h-16 rounded-full bg-emerald-100 p-2 flex items-center justify-center mx-auto mb-4"><svg class="w-12 h-12 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></div>
@@ -106,7 +131,6 @@
     </div>
 </div>
 
-<!-- Edit Confirmation Modal -->
 <div id="editConfirmationModal" class="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 backdrop-blur-sm hidden">
     <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-sm mx-4 text-center transform scale-95 opacity-0 transition-all border border-gray-200/80">
         <div class="w-16 h-16 rounded-full bg-amber-100 p-2 flex items-center justify-center mx-auto mb-4">
@@ -161,6 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalEvaluation = document.getElementById('modalEvaluation');
     const modalAssignment = document.getElementById('modalAssignment');
     const modalExam = document.getElementById('modalExam');
+    const modalTotal = document.getElementById('modalTotal');
     const editGradeSchemeBtn = document.getElementById('editGradeSchemeBtn');
 
     const createGradeCard = (grade) => {
@@ -296,6 +321,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 modalEvaluation.textContent = `${grade.evaluation}%`;
                 modalAssignment.textContent = `${grade.assignment}%`;
                 modalExam.textContent = `${grade.exam}%`;
+                const total = grade.aae + grade.evaluation + grade.assignment + grade.exam;
+                modalTotal.textContent = `${total}%`;
                 showModal(gradeDetailModal, gradeDetailModalPanel);
             }
         }
