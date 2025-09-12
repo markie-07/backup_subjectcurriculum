@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Grade extends Model
 {
@@ -15,11 +16,18 @@ class Grade extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'subject_code',
-        'subject_name',
+        'subject_id',
         'aae',
         'evaluation',
         'assignment',
         'exam',
     ];
+
+    /**
+     * Get the subject that this grade scheme belongs to.
+     */
+    public function subject(): BelongsTo
+    {
+        return $this->belongsTo(Subject::class, 'subject_id', 'id');
+    }
 }

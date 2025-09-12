@@ -12,14 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('grades', function (Blueprint $table) {
-            $table->id();
-            $table->string('subject_code');
-            $table->string('subject_name');
+            $table->id(); // Use Laravel's default 'id' primary key
+            $table->unsignedBigInteger('subject_id')->unique(); // The foreign key to the subjects table
             $table->integer('aae');
             $table->integer('evaluation');
             $table->integer('assignment');
             $table->integer('exam');
             $table->timestamps();
+
+            // Defines the relationship between the 'grades' and 'subjects' tables
+            $table->foreign('subject_id')->references('id')->on('subjects')->onDelete('cascade');
         });
     }
 
