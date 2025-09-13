@@ -17,7 +17,6 @@
         </div>
 
         <div class="bg-white p-6 rounded-2xl shadow-lg">
-            <!-- Main Custom Searchable Dropdown -->
             <div class="mb-6 pb-6 border-b border-gray-200">
                 <label for="curriculum-selector-button" class="block text-lg font-semibold text-gray-700 mb-2">Select Curriculum to View</label>
                 <div id="custom-curriculum-selector" class="relative">
@@ -62,7 +61,6 @@
                         <p class="text-sm font-semibold text-gray-600">Curriculum:</p>
                         <p id="modalCurriculumName" class="text-lg font-bold text-gray-800"></p>
                     </div>
-                    <!-- UPDATED: Custom Searchable Dropdown for Subjects in Modal -->
                     <div>
                         <label for="modal-subject-selector-button" class="block text-sm font-semibold text-gray-700 mb-1">Subject (Takes the Prerequisites)</label>
                         <div id="modal-custom-subject-selector" class="relative">
@@ -75,8 +73,7 @@
                                     <input type="text" id="modal-subject-search-input" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="Search for a subject...">
                                 </div>
                                 <ul id="modal-subject-options-list" class="max-h-60 overflow-y-auto">
-                                    <!-- Options will be populated by JavaScript -->
-                                </ul>
+                                    </ul>
                             </div>
                         </div>
                     </div>
@@ -305,7 +302,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // UPDATED: This function now renders the chain as a single line with arrows
     function renderPrerequisiteChain(prerequisites, subjects) {
         prerequisiteChainContainer.innerHTML = '';
         if (Object.keys(prerequisites).length === 0) {
@@ -333,7 +329,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         <span class="font-bold text-2xl text-gray-400 mx-2">&rarr;</span>
                         ${prereqHtml}
                     </div>
-                    <button class="edit-prereq-btn text-sm font-semibold text-blue-600 hover:text-blue-800 hover:underline" data-subject-code="${subjectCode}">Edit</button>
+                    <button class="edit-prereq-btn p-2 text-blue-600 hover:text-blue-800 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" data-subject-code="${subjectCode}">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z"></path></svg>
+                    </button>
                 `;
                 prerequisiteChainContainer.appendChild(chainDiv);
             }
@@ -344,7 +342,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function addEditButtonListeners() {
         document.querySelectorAll('.edit-prereq-btn').forEach(button => {
             button.addEventListener('click', (e) => {
-                const subjectCodeToEdit = e.target.dataset.subjectCode;
+                const subjectCodeToEdit = e.target.closest('button').dataset.subjectCode;
                 showModal(subjectCodeToEdit);
             });
         });
@@ -416,4 +414,3 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 @endsection
-

@@ -62,7 +62,7 @@ class AiController extends Controller
 
         $prompt = "Generate a detailed lesson plan for the topic '{$validated['topic']}' in the subject '{$validated['subjectName']}' for early college-level students. The lesson plan should cover a total of {$duration} hours. The response must be a single block of plain text. Do not include any markdown characters like *, #, or ` at the beginning of lines.
 
-Lesson Plan:
+Lesson Plan :
 Total Duration: {$duration} hours
 
 Learning Objectives:
