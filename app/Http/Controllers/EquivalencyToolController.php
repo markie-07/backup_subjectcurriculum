@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Subject;
-use App\Models\Equivalency; // Import the new model
+use App\Models\Equivalency;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Http\JsonResponse;
@@ -11,36 +11,50 @@ use Illuminate\Http\JsonResponse;
 class EquivalencyToolController extends Controller
 {
     /**
-     * Display the equivalency tool page and provide all subjects and existing equivalencies.
+     * Display the equivalency tool view with all subjects and existing equivalencies.
      */
     public function index(): View
     {
+        // Fetch all subjects to populate the dropdown
         $subjects = Subject::orderBy('subject_code')->get();
-        // Fetch equivalencies and eager-load the related subject data to prevent extra queries
-        $equivalencies = Equivalency::with('equivalentSubject')->latest()->get();
+        
+        // Fetch all existing equivalencies, eager load the related subject, and order by the newest first
+        $equivalencies = Equivalency::with('equivalentSubject')
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-        return view('equivalency_tool', [
-            'subjects' => $subjects,
-            'equivalencies' => $equivalencies, // Pass equivalencies to the view
-        ]);
+        return view('equivalency_tool', compact('subjects', 'equivalencies'));
     }
 
     /**
-     * Store a new equivalency in the database.
+     * Store a newly created equivalency in the database.
      */
     public function store(Request $request): JsonResponse
     {
-        $request->validate([
+        $validated = $request->validate([
             'source_subject_name' => 'required|string|max:255',
             'equivalent_subject_id' => 'required|exists:subjects,id',
         ]);
 
-        $equivalency = Equivalency::create([
-            'source_subject_name' => $request->source_subject_name,
-            'equivalent_subject_id' => $request->equivalent_subject_id,
-        ]);
+        $equivalency = Equivalency::create($validated);
 
         // Return the new record with its relationship loaded so the frontend can display it
+        return response()->json($equivalency->load('equivalentSubject'));
+    }
+
+    /**
+     * Update the specified equivalency in the database.
+     */
+    public function update(Request $request, Equivalency $equivalency): JsonResponse
+    {
+        $validated = $request->validate([
+            'source_subject_name' => 'required|string|max:255',
+            'equivalent_subject_id' => 'required|exists:subjects,id',
+        ]);
+
+        $equivalency->update($validated);
+
+        // Return the updated record with its relationship loaded
         return response()->json($equivalency->load('equivalentSubject'));
     }
 
@@ -50,6 +64,9 @@ class EquivalencyToolController extends Controller
     public function destroy(Equivalency $equivalency): JsonResponse
     {
         $equivalency->delete();
-        return response()->json(['message' => 'Equivalency removed successfully.']);
+        
+        // Return a success message
+        return response()->json(['message' => 'Equivalency deleted successfully.']);
     }
 }
+
