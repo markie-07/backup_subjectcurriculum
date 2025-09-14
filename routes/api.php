@@ -9,6 +9,7 @@ use App\Http\Controllers\PrerequisiteController;
 use App\Http\Controllers\GradeController;
 
 
+
 // --- Curriculum Routes ---
 Route::get('/curriculums', [CurriculumController::class, 'index']);
 Route::post('/curriculums', [CurriculumController::class, 'store']);

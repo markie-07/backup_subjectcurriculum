@@ -2,7 +2,8 @@
 
 @section('content')
 <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-8">
-    <div class="container mx-auto">
+    {{-- The 'container' and 'mx-auto' classes have been removed from this div --}}
+    <div>
         {{-- Header --}}
         <div class="bg-white p-6 rounded-2xl shadow-lg mb-8">
             <h1 class="text-3xl font-bold text-gray-800">Subject Offering History</h1>

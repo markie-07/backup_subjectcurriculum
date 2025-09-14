@@ -4,6 +4,7 @@ use App\Http\Controllers\CurriculumController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PrerequisiteController;
 use App\Http\Controllers\SubjectHistoryController;
+use App\Http\Controllers\EquivalencyToolController;
 
 
 Route::get('/', function () {
@@ -50,3 +51,7 @@ Route::post('/compliance-validator/validate', function () {
     // Handle validation logic here
 })->name('ched.validator.validate');
 
+// EQUIVALENCY TOOL
+Route::get('/equivalency_tool', [EquivalencyToolController::class, 'index'])->name('equivalency_tool');
+Route::post('/equivalency_tool', [EquivalencyToolController::class, 'store'])->name('equivalency_tool.store');
+Route::delete('/equivalencies/{equivalency}', [EquivalencyToolController::class, 'destroy'])->name('equivalency.destroy');

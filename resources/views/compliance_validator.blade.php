@@ -2,7 +2,8 @@
 
 @section('content')
 <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-8">
-    <div class="container mx-auto">
+    {{-- The 'container' and 'mx-auto' classes have been removed from this div --}}
+    <div>
         {{-- Main Content Section --}}
         <div class="bg-white p-10 md:p-12 rounded-2xl shadow-lg border border-gray-200">
 
