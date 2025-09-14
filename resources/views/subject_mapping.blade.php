@@ -72,9 +72,7 @@
         </div>
     </div>
 
-    {{-- 
-    START OF CHANGES: Redesigned modal for adding/editing a new subject 
-    --}}
+    {{-- Modal for adding/editing a new subject --}}
     <div id="addSubjectModal" class="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-75 transition-opacity duration-300 ease-out hidden">
         <div class="flex items-start justify-center min-h-screen p-4 pt-8">
             <form id="subjectForm" class="relative bg-white w-full max-w-6xl rounded-2xl shadow-2xl transform scale-95 opacity-0 transition-all duration-300 ease-out flex flex-col" id="modal-subject-panel">
@@ -166,13 +164,12 @@
             </form>
         </div>
     </div>
-    {{-- END OF CHANGES --}}
-
+    
     {{-- Modal for displaying subject details on double-click --}}
     <div id="subjectDetailsModal" class="fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-60 transition-opacity duration-300 ease-out hidden">
         <div class="flex items-start justify-center min-h-screen p-4 pt-8">
             <div class="relative bg-white w-full max-w-6xl rounded-2xl shadow-2xl transform scale-95 opacity-0 transition-all duration-300 ease-out flex flex-col" id="modal-details-panel">
-                {{-- HEADER: Now only contains the title and close button --}}
+                {{-- HEADER --}}
                 <div class="flex justify-between items-center p-5 border-b border-gray-200">
                     <h2 id="detailsSubjectName" class="text-xl font-bold text-gray-800"></h2>
                     <button id="closeDetailsModalButton" class="text-gray-400 hover:text-gray-600 focus:outline-none transition-colors duration-200" aria-label="Close modal">
@@ -180,9 +177,8 @@
                     </button>
                 </div>
 
-                {{-- BODY: Main content area (scrollable) --}}
+                {{-- BODY --}}
                 <div class="p-6 max-h-[75vh] overflow-y-auto">
-                    {{-- Grid for Subject Details, "Created At" is now removed from here --}}
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 mb-6">
                         <div>
                             <p class="text-sm font-medium text-gray-500">Subject Code</p>
@@ -200,11 +196,10 @@
 
                     <div class="space-y-2" id="detailsLessonsContainer">
                         <h3 class="text-xl font-bold text-gray-800 pt-4 border-t border-gray-200">Lessons</h3>
-                        {{-- JS will populate this section --}}
                     </div>
                 </div>
                 
-                {{-- FOOTER: New section for buttons and timestamp --}}
+                {{-- FOOTER --}}
                 <div class="flex justify-between items-center p-5 mt-auto border-t border-gray-200 bg-gray-50 rounded-b-2xl">
                     <div id="detailsCreatedAtContainer">
                         <p class="text-sm font-medium text-gray-500">Created At</p>
@@ -225,7 +220,7 @@
         </div>
     </div>
     
-    {{-- NEW: Confirmation Modal for Subject Removal --}}
+    {{-- Confirmation Modal for Subject Removal --}}
     <div id="removeConfirmationModal" class="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-75 transition-opacity duration-300 ease-out hidden">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="relative bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 text-center transform scale-95 opacity-0 transition-all duration-300 ease-out" id="remove-modal-panel">
@@ -243,7 +238,8 @@
             </div>
         </div>
     </div>
-    {{-- NEW: Confirmation Modal for Subject Import --}}
+    
+    {{-- Confirmation Modal for Subject Import --}}
     <div id="importConfirmationModal" class="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-75 transition-opacity duration-300 ease-out hidden">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="relative bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 text-center transform scale-95 opacity-0 transition-all duration-300 ease-out" id="import-modal-panel">
@@ -261,11 +257,63 @@
             </div>
         </div>
     </div>
+    
+    {{-- *** START OF NEW MODALS *** --}}
+
+    <div id="createConfirmationModal" class="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-75 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="relative bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 text-center">
+                <div class="w-12 h-12 rounded-full bg-blue-100 p-2 flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800">Create Subject</h3>
+                <p class="text-sm text-gray-500 mt-2">Do you want to create this new subject?</p>
+                <div class="mt-6 flex justify-center gap-4">
+                    <button id="cancelCreateBtn" class="w-full px-6 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200">Cancel</button>
+                    <button id="confirmCreateBtn" class="w-full px-6 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700">Yes, create it!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="gradeSetupConfirmationModal" class="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-75 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="relative bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 text-center">
+                <div class="w-12 h-12 rounded-full bg-indigo-100 p-2 flex items-center justify-center mx-auto mb-4">
+                     <svg class="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800">Set Up Grades?</h3>
+                <p class="text-sm text-gray-500 mt-2">Do you want to set up the grade components for this subject now?</p>
+                <div class="mt-6 flex justify-center gap-4">
+                    <button id="declineGradeSetupBtn" class="w-full px-6 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200">No</button>
+                    <button id="confirmGradeSetupBtn" class="w-full px-6 py-2.5 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="creationSuccessModal" class="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-75 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="relative bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 text-center">
+                <div class="w-12 h-12 rounded-full bg-green-100 p-2 flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800">Success!</h3>
+                <p class="text-sm text-gray-500 mt-2">You successfully created a new subject.</p>
+                <div class="mt-6">
+                    <button id="successOkBtn" class="w-full px-6 py-2.5 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {{-- *** END OF NEW MODALS *** --}}
 </main>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         
+        // Existing elements...
         const createSubjectButton = document.getElementById('createSubjectButton');
         const addSubjectModal = document.getElementById('addSubjectModal');
         const closeSubjectModalButton = document.getElementById('closeSubjectModalButton');
@@ -275,6 +323,21 @@
         const generateTopicsButton = document.getElementById('generateTopicsButton');
         const topicSpinner = document.getElementById('topicSpinner');
         const createdTimestamp = document.getElementById('createdTimestamp');
+
+        // *** START OF NEW MODAL ELEMENTS ***
+        const createConfirmationModal = document.getElementById('createConfirmationModal');
+        const cancelCreateBtn = document.getElementById('cancelCreateBtn');
+        const confirmCreateBtn = document.getElementById('confirmCreateBtn');
+
+        const gradeSetupConfirmationModal = document.getElementById('gradeSetupConfirmationModal');
+        const declineGradeSetupBtn = document.getElementById('declineGradeSetupBtn');
+        const confirmGradeSetupBtn = document.getElementById('confirmGradeSetupBtn');
+
+        const creationSuccessModal = document.getElementById('creationSuccessModal');
+        const successOkBtn = document.getElementById('successOkBtn');
+        let createdSubjectData = null; // To hold data between modals
+        // *** END OF NEW MODAL ELEMENTS ***
+
 
         const showSubjectModal = (subjectToEdit = null) => {
             subjectForm.reset();
@@ -337,20 +400,30 @@
                 hideSubjectModal();
             }
         });
+        
+        // *** START: REWIRED MODAL LOGIC ***
+        const hideCreateConfirmation = () => createConfirmationModal.classList.add('hidden');
+        const showCreateConfirmation = () => createConfirmationModal.classList.remove('hidden');
 
-        document.querySelectorAll('.week-toggle-btn').forEach(button => {
-            button.addEventListener('click', () => {
-                const parent = button.parentElement;
-                const contentDiv = parent.querySelector('.week-content');
-                const svg = button.querySelector('svg');
-                contentDiv.classList.toggle('hidden');
-                svg.classList.toggle('rotate-180');
-            });
-        });
+        const hideGradeSetupConfirmation = () => gradeSetupConfirmationModal.classList.add('hidden');
+        const showGradeSetupConfirmation = () => gradeSetupConfirmationModal.classList.remove('hidden');
 
+        const hideSuccess = () => creationSuccessModal.classList.add('hidden');
+        const showSuccess = () => creationSuccessModal.classList.remove('hidden');
+
+        // Main form submission triggers the first confirmation modal
         subjectForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            
+            showCreateConfirmation();
+        });
+
+        // Handle "Cancel" on create confirmation
+        cancelCreateBtn.addEventListener('click', hideCreateConfirmation);
+
+        // Handle "Confirm" on create confirmation -> This is where the fetch happens
+        confirmCreateBtn.addEventListener('click', () => {
+            hideCreateConfirmation();
+
             const subjectId = document.getElementById('subjectId').value;
             const isUpdating = !!subjectId;
 
@@ -372,62 +445,67 @@
             const url = isUpdating ? `/api/subjects/${subjectId}` : '/api/subjects';
             const method = isUpdating ? 'PUT' : 'POST';
 
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "Do you want to create a new subject?",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, create it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    fetch(url, {
-                        method: method,
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                            'Accept': 'application/json',
-                        },
-                        body: JSON.stringify(subjectData)
-                    })
-                    .then(async response => {
-                        if (!response.ok) {
-                            const errorData = await response.json();
-                            throw errorData;
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        hideSubjectModal();
-                        Swal.fire({
-                            title: 'Do you want to set up the grade on the subject?',
-                            showDenyButton: true,
-                            confirmButtonText: 'Yes',
-                            denyButtonText: `No`,
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                window.location.href = `/grade_setup?subjectId=${data.subject.id}`;
-                            } else if (result.isDenied) {
-                                Swal.fire('You successfully created a new subject', '', 'success').then(() => {
-                                    location.reload();
-                                })
-                            }
-                        })
-
-                    })
-                    .catch(error => {
-                        console.error('Error submitting subject:', error);
-                        let errorMessage = 'An unknown error occurred. Please try again.';
-                        if (error.errors) {
-                            errorMessage = Object.values(error.errors).map(messages => messages.join('\n')).join('\n');
-                        } else if (error.message) {
-                            errorMessage = error.message;
-                        }
-                        alert('Could not save subject:\n\n' + errorMessage);
-                    });
-                }
+            fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify(subjectData)
             })
+            .then(async response => {
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw errorData;
+                }
+                return response.json();
+            })
+            .then(data => {
+                hideSubjectModal();
+                createdSubjectData = data; // Store the successful response data
+                showGradeSetupConfirmation(); // Show the next modal
+            })
+            .catch(error => {
+                console.error('Error submitting subject:', error);
+                let errorMessage = 'An unknown error occurred. Please try again.';
+                if (error.errors) {
+                    errorMessage = Object.values(error.errors).map(messages => messages.join('\n')).join('\n');
+                } else if (error.message) {
+                    errorMessage = error.message;
+                }
+                alert('Could not save subject:\n\n' + errorMessage);
+            });
+        });
+
+        // Handle "Yes" for grade setup
+        confirmGradeSetupBtn.addEventListener('click', () => {
+            hideGradeSetupConfirmation();
+            window.location.href = `/grade_setup?subjectId=${createdSubjectData.subject.id}`;
+        });
+
+        // Handle "No" for grade setup
+        declineGradeSetupBtn.addEventListener('click', () => {
+            hideGradeSetupConfirmation();
+            showSuccess();
+        });
+
+        // Handle "OK" on the final success message
+        successOkBtn.addEventListener('click', () => {
+            hideSuccess();
+            location.reload();
+        });
+        // *** END: REWIRED MODAL LOGIC ***
+
+
+        document.querySelectorAll('.week-toggle-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const parent = button.parentElement;
+                const contentDiv = parent.querySelector('.week-content');
+                const svg = button.querySelector('svg');
+                contentDiv.classList.toggle('hidden');
+                svg.classList.toggle('rotate-180');
+            });
         });
 
         generateTopicsButton.addEventListener('click', () => {
