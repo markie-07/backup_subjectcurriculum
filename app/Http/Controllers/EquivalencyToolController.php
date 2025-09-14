@@ -69,4 +69,3 @@ class EquivalencyToolController extends Controller
         return response()->json(['message' => 'Equivalency deleted successfully.']);
     }
 }
-

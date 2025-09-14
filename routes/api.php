@@ -7,8 +7,7 @@ use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\AiController;
 use App\Http\Controllers\PrerequisiteController;
 use App\Http\Controllers\GradeController;
-
-
+use App\Http\Controllers\EquivalencyToolController; 
 
 // --- Curriculum Routes ---
 Route::get('/curriculums', [CurriculumController::class, 'index']);
@@ -36,12 +35,14 @@ Route::post('/prerequisites', [PrerequisiteController::class, 'store']);
 // --- Grade Routes ---
 Route::get('/grades', [GradeController::class, 'index']);
 Route::post('/grades', [GradeController::class, 'store']);
-
-// === LINES TO ADD START HERE ===
 Route::get('/grades/{id}', [GradeController::class, 'show']);
 Route::put('/grades/{id}', [GradeController::class, 'update']);
 Route::delete('/grades/{id}', [GradeController::class, 'destroy']);
-// === LINES TO ADD END HERE ===
+
+// --- Equivalency Tool Routes ---
+Route::post('/equivalencies', [EquivalencyToolController::class, 'store']);
+Route::patch('/equivalencies/{equivalency}', [EquivalencyToolController::class, 'update']);
+Route::delete('/equivalencies/{equivalency}', [EquivalencyToolController::class, 'destroy']);
 
 // --- Default User Route ---
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

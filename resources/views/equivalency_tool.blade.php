@@ -208,6 +208,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let itemToDelete = null;
     let itemToEdit = null;
 
+    // --- MODAL HELPER FUNCTIONS ---
     window.openModal = (modalId) => {
         const modal = document.getElementById(modalId);
         backdrop.classList.remove('hidden');
@@ -225,6 +226,7 @@ document.addEventListener('DOMContentLoaded', function () {
         openModal('success-modal');
     };
 
+    // --- CARD CREATION ---
     const createEquivalencyCard = (equivalency) => {
         const date = new Date(equivalency.created_at);
         const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
@@ -273,18 +275,20 @@ document.addEventListener('DOMContentLoaded', function () {
         equivalencyList.prepend(newCard);
     };
 
+    // --- API ACTIONS ---
+    
     // CREATE
     createBtn.addEventListener('click', async function () {
         const sourceSubject = sourceSubjectInput.value.trim();
         const equivalentSubjectId = equivalentSubjectSelect.value;
 
         if (sourceSubject === '' || equivalentSubjectId === '') {
-            alert('Please fill out both subject fields.'); // Can be replaced by a modal too
+            alert('Please fill out both subject fields.');
             return;
         }
 
         try {
-            const response = await fetch("{{ route('equivalency_tool.store') }}", {
+            const response = await fetch('/api/equivalencies', { // CORRECTED URL
                 method: 'POST',
                 headers: {'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json'},
                 body: JSON.stringify({ source_subject_name: sourceSubject, equivalent_subject_id: equivalentSubjectId })
@@ -330,8 +334,8 @@ document.addEventListener('DOMContentLoaded', function () {
         };
 
         try {
-            const response = await fetch(`/equivalencies/${equivalencyId}`, {
-                method: 'PATCH', // or PUT
+            const response = await fetch(`/api/equivalencies/${equivalencyId}`, { // CORRECTED URL
+                method: 'PATCH',
                 headers: {'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json'},
                 body: JSON.stringify(updatedData)
             });
@@ -355,15 +359,18 @@ document.addEventListener('DOMContentLoaded', function () {
         const equivalencyId = itemToDelete.dataset.id;
 
         try {
-            const response = await fetch(`/equivalencies/${equivalencyId}`, {
+            const response = await fetch(`/api/equivalencies/${equivalencyId}`, { // CORRECTED URL
                 method: 'DELETE',
                 headers: {'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json'}
             });
 
             if (!response.ok) throw new Error((await response.json()).message || 'Failed to delete.');
             
+            // Animate out
+            itemToDelete.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
             itemToDelete.style.transform = 'translateX(100%)';
             itemToDelete.style.opacity = '0';
+            
             setTimeout(() => {
                 itemToDelete.remove();
                 if (equivalencyList.children.length === 0) {
@@ -384,7 +391,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
     
-    // SEARCH
+    // --- SEARCH ---
     searchInput.addEventListener('input', function () {
         const searchTerm = searchInput.value.toLowerCase();
         const items = equivalencyList.getElementsByClassName('equivalency-item');
@@ -398,4 +405,5 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 @endsection
+
 
