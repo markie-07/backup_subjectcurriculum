@@ -155,6 +155,7 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     let gradesData = [];
@@ -302,6 +303,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 option.textContent = `${subject.subject_name} (${subject.subject_code})`;
                 subjectSelect.appendChild(option);
             });
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            const subjectId = urlParams.get('subjectId');
+            if (subjectId) {
+                subjectSelect.value = subjectId;
+            }
+
         }).catch(() => subjectSelect.innerHTML = '<option value="">Could not load subjects</option>');
     };
     
@@ -328,7 +336,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Event Listeners ---
     gradeInputs.forEach(input => input.addEventListener('input', updateFormState));
     subjectSelect.addEventListener('change', updateFormState);
-    addGradeBtn.addEventListener('click', submitGrade);
+    addGradeBtn.addEventListener('click', ()=>{
+        Swal.fire({
+            title: 'Are you sure to the grade setup?',
+            showDenyButton: true,
+            confirmButtonText: 'Yes',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                submitGrade().then(()=>{
+                    Swal.fire('You successfully setup the grade on the subject', '', 'success').then(
+                        ()=>window.location.href = '/subject_mapping'
+                    );
+                })
+            }
+        })
+    });
 
     // Card click to open detail modal
     existingGradesContainer.addEventListener('click', (e) => {

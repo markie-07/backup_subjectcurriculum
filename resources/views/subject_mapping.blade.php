@@ -6,10 +6,10 @@
         
         <div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center">
             <div class="mb-4 sm:mb-0">
-                <h1 class="text-3xl font-bold text-gray-800">Subject Mapping</h1>
-                <p class="text-sm text-gray-500 mt-1">Drag and drop subjects to build the curriculum.</p>
+                <h1 class="text-3xl font-bold text-gray-800"><i class="fas fa-sitemap mr-2"></i>Subject Mapping</h1>
+                <p class="text-sm text-gray-500 mt-1"><i class="fas fa-hand-rock mr-2"></i>Drag and drop subjects to build the curriculum.</p>
             </div>
-            <button id="addSubjectButton" class="w-full sm:w-auto flex items-center justify-center space-x-2 px-4 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800 transition-colors shadow-md">
+            <button id="createSubjectButton" class="w-full sm:w-auto flex items-center justify-center space-x-2 px-4 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800 transition-colors shadow-md">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                 <span>Add New Subject</span>
             </button>
@@ -19,8 +19,8 @@
             
             <div class="lg:col-span-1 bg-gray-50 border border-gray-200 rounded-xl p-6 flex flex-col">
                 <div class="pb-4 border-b border-gray-200">
-                    <h2 class="text-xl font-semibold text-gray-800">Available Subjects</h2>
-                    <p class="text-sm text-gray-500">Find and select subjects to add to the curriculum.</p>
+                    <h2 class="text-xl font-semibold text-gray-800"><i class="fas fa-book mr-2"></i>Available Subjects</h2>
+                    <p class="text-sm text-gray-500"><i class="fas fa-search mr-2"></i>Find and select subjects to add to the curriculum.</p>
                 </div>
                 
                 <div class="flex flex-col sm:flex-row gap-3 my-4">
@@ -262,11 +262,11 @@
         </div>
     </div>
 </main>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         
-        const addSubjectButton = document.getElementById('addSubjectButton');
+        const createSubjectButton = document.getElementById('createSubjectButton');
         const addSubjectModal = document.getElementById('addSubjectModal');
         const closeSubjectModalButton = document.getElementById('closeSubjectModalButton');
         const cancelSubjectModalButton = document.getElementById('cancelSubjectModalButton');
@@ -329,7 +329,7 @@
             }, 300);
         };
 
-        addSubjectButton.addEventListener('click', () => showSubjectModal());
+        createSubjectButton.addEventListener('click', () => showSubjectModal());
         closeSubjectModalButton.addEventListener('click', hideSubjectModal);
         cancelSubjectModalButton.addEventListener('click', hideSubjectModal);
         addSubjectModal.addEventListener('click', (e) => {
@@ -372,57 +372,62 @@
             const url = isUpdating ? `/api/subjects/${subjectId}` : '/api/subjects';
             const method = isUpdating ? 'PUT' : 'POST';
 
-            fetch(url, {
-                method: method,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                    'Accept': 'application/json',
-                },
-                body: JSON.stringify(subjectData)
-            })
-            .then(async response => {
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw errorData;
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (isUpdating) {
-                    const updatedCard = document.getElementById(`subject-${data.subject.subject_code.toLowerCase()}`);
-                    if (updatedCard) {
-                        const newCard = createSubjectCard(data.subject);
-                        updatedCard.replaceWith(newCard);
-                    }
-                    document.querySelectorAll(`.subject-tag`).forEach(tag => {
-                        const tagData = JSON.parse(tag.dataset.subjectData);
-                        if (tagData.id === data.subject.id) {
-                            const newTag = createSubjectTag(data.subject, isEditing);
-                            tag.replaceWith(newTag);
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you want to create a new subject?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, create it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(url, {
+                        method: method,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            'Accept': 'application/json',
+                        },
+                        body: JSON.stringify(subjectData)
+                    })
+                    .then(async response => {
+                        if (!response.ok) {
+                            const errorData = await response.json();
+                            throw errorData;
                         }
-                    });
-                } else {
-                    const placeholder = availableSubjectsContainer.querySelector('p');
-                    if (placeholder) placeholder.remove();
-                    const newSubjectCard = createSubjectCard(data.subject);
-                    availableSubjectsContainer.prepend(newSubjectCard);
+                        return response.json();
+                    })
+                    .then(data => {
+                        hideSubjectModal();
+                        Swal.fire({
+                            title: 'Do you want to set up the grade on the subject?',
+                            showDenyButton: true,
+                            confirmButtonText: 'Yes',
+                            denyButtonText: `No`,
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = `/grade_setup?subjectId=${data.subject.id}`;
+                            } else if (result.isDenied) {
+                                Swal.fire('You successfully created a new subject', '', 'success').then(() => {
+                                    location.reload();
+                                })
+                            }
+                        })
 
-                    // Redirect to grade_setup page after creating a new subject
-                    window.location.href = `/grade_setup?subjectId=${data.subject.id}`;
+                    })
+                    .catch(error => {
+                        console.error('Error submitting subject:', error);
+                        let errorMessage = 'An unknown error occurred. Please try again.';
+                        if (error.errors) {
+                            errorMessage = Object.values(error.errors).map(messages => messages.join('\n')).join('\n');
+                        } else if (error.message) {
+                            errorMessage = error.message;
+                        }
+                        alert('Could not save subject:\n\n' + errorMessage);
+                    });
                 }
-                hideSubjectModal();
             })
-            .catch(error => {
-                console.error('Error submitting subject:', error);
-                let errorMessage = 'An unknown error occurred. Please try again.';
-                if (error.errors) {
-                    errorMessage = Object.values(error.errors).map(messages => messages.join('\n')).join('\n');
-                } else if (error.message) {
-                    errorMessage = error.message;
-                }
-                alert('Could not save subject:\n\n' + errorMessage);
-            });
         });
 
         generateTopicsButton.addEventListener('click', () => {
@@ -799,7 +804,7 @@
             newSubjectCard.dataset.status = status;
 
             let cardClasses = 'subject-card flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg transition-all';
-            let statusHTML = '<svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>';
+            let statusHTML = '<i class="fas fa-bars text-gray-400"></i>';
             let isDraggable = true;
 
             if (isMapped) {
