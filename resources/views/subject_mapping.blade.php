@@ -72,7 +72,9 @@
         </div>
     </div>
 
-    {{-- Modal for adding/editing a new subject --}}
+    {{-- START: ALL MODALS --}}
+
+    {{-- Add/Edit Subject Modal --}}
     <div id="addSubjectModal" class="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-75 transition-opacity duration-300 ease-out hidden">
         <div class="flex items-start justify-center min-h-screen p-4 pt-8">
             <form id="subjectForm" class="relative bg-white w-full max-w-6xl rounded-2xl shadow-2xl transform scale-95 opacity-0 transition-all duration-300 ease-out flex flex-col" id="modal-subject-panel">
@@ -165,19 +167,16 @@
         </div>
     </div>
     
-    {{-- Modal for displaying subject details on double-click --}}
+    {{-- Subject Details Modal --}}
     <div id="subjectDetailsModal" class="fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-60 transition-opacity duration-300 ease-out hidden">
         <div class="flex items-start justify-center min-h-screen p-4 pt-8">
             <div class="relative bg-white w-full max-w-6xl rounded-2xl shadow-2xl transform scale-95 opacity-0 transition-all duration-300 ease-out flex flex-col" id="modal-details-panel">
-                {{-- HEADER --}}
                 <div class="flex justify-between items-center p-5 border-b border-gray-200">
                     <h2 id="detailsSubjectName" class="text-xl font-bold text-gray-800"></h2>
                     <button id="closeDetailsModalButton" class="text-gray-400 hover:text-gray-600 focus:outline-none transition-colors duration-200" aria-label="Close modal">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
                 </div>
-
-                {{-- BODY --}}
                 <div class="p-6 max-h-[75vh] overflow-y-auto">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 mb-6">
                         <div>
@@ -220,7 +219,7 @@
         </div>
     </div>
     
-    {{-- Confirmation Modal for Subject Removal --}}
+    {{-- Remove Subject Confirmation Modal --}}
     <div id="removeConfirmationModal" class="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-75 transition-opacity duration-300 ease-out hidden">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="relative bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 text-center transform scale-95 opacity-0 transition-all duration-300 ease-out" id="remove-modal-panel">
@@ -239,7 +238,7 @@
         </div>
     </div>
     
-    {{-- Confirmation Modal for Subject Import --}}
+    {{-- Import Confirmation Modal --}}
     <div id="importConfirmationModal" class="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-75 transition-opacity duration-300 ease-out hidden">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="relative bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 text-center transform scale-95 opacity-0 transition-all duration-300 ease-out" id="import-modal-panel">
@@ -258,8 +257,7 @@
         </div>
     </div>
     
-    {{-- *** START OF NEW MODALS *** --}}
-
+    {{-- Create Subject Confirmation Modal --}}
     <div id="createConfirmationModal" class="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-75 hidden">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="relative bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 text-center">
@@ -276,6 +274,7 @@
         </div>
     </div>
 
+    {{-- Grade Setup Confirmation Modal --}}
     <div id="gradeSetupConfirmationModal" class="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-75 hidden">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="relative bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 text-center">
@@ -292,6 +291,7 @@
         </div>
     </div>
 
+    {{-- Creation Success Modal --}}
     <div id="creationSuccessModal" class="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-75 hidden">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="relative bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 text-center">
@@ -306,10 +306,62 @@
             </div>
         </div>
     </div>
-    
-    {{-- *** END OF NEW MODALS *** --}}
+
+    {{-- ... (your other existing modals like addSubjectModal, subjectDetailsModal, etc.) ... --}}
+
+    {{-- Save Mapping Confirmation Modal --}}
+    <div id="saveMappingModal" class="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-75 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="relative bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 text-center">
+                {{-- ICON ADDED --}}
+                <div class="w-12 h-12 rounded-full bg-blue-100 p-2 flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800">Save Mapping</h3>
+                <p class="text-sm text-gray-500 mt-2">Are you sure you want to save the mapping?</p>
+                <div class="mt-6 flex justify-center gap-4">
+                    <button id="cancelSaveMapping" class="w-full px-6 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200">Cancel</button>
+                    <button id="confirmSaveMapping" class="w-full px-6 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Proceed to Prerequisites Confirmation Modal --}}
+    <div id="proceedToPrerequisitesModal" class="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-75 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="relative bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 text-center">
+                {{-- ICON ADDED --}}
+                <div class="w-12 h-12 rounded-full bg-blue-100 p-2 flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800">Proceed to Prerequisites</h3>
+                <p class="text-sm text-gray-500 mt-2">Do you want to go to Pre-requisite Configuration to set up the Pre-requisite?</p>
+                <div class="mt-6 flex justify-center gap-4">
+                    <button id="declineProceedToPrerequisites" class="w-full px-6 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200">No</button>
+                    <button id="confirmProceedToPrerequisites" class="w-full px-6 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Mapping Success Modal --}}
+    <div id="mappingSuccessModal" class="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-75 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="relative bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 text-center">
+                {{-- ICON ADDED --}}
+                <div class="w-12 h-12 rounded-full bg-green-100 p-2 flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800">Success!</h3>
+                <p class="text-sm text-gray-500 mt-2">You have successfully mapped the subject.</p>
+                <div class="mt-6">
+                    <button id="closeMappingSuccessModal" class="w-full px-6 py-2.5 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </main>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         
@@ -324,20 +376,28 @@
         const topicSpinner = document.getElementById('topicSpinner');
         const createdTimestamp = document.getElementById('createdTimestamp');
 
-        // *** START OF NEW MODAL ELEMENTS ***
+        // Modals for creating subjects
         const createConfirmationModal = document.getElementById('createConfirmationModal');
         const cancelCreateBtn = document.getElementById('cancelCreateBtn');
         const confirmCreateBtn = document.getElementById('confirmCreateBtn');
-
         const gradeSetupConfirmationModal = document.getElementById('gradeSetupConfirmationModal');
         const declineGradeSetupBtn = document.getElementById('declineGradeSetupBtn');
         const confirmGradeSetupBtn = document.getElementById('confirmGradeSetupBtn');
-
         const creationSuccessModal = document.getElementById('creationSuccessModal');
         const successOkBtn = document.getElementById('successOkBtn');
-        let createdSubjectData = null; // To hold data between modals
-        // *** END OF NEW MODAL ELEMENTS ***
+        let createdSubjectData = null;
 
+        // *** START: NEW MODAL ELEMENTS FOR SAVING MAPPING ***
+        const saveCurriculumButton = document.getElementById('saveCurriculumButton');
+        const saveMappingModal = document.getElementById('saveMappingModal');
+        const cancelSaveMapping = document.getElementById('cancelSaveMapping');
+        const confirmSaveMapping = document.getElementById('confirmSaveMapping');
+        const proceedToPrerequisitesModal = document.getElementById('proceedToPrerequisitesModal');
+        const declineProceedToPrerequisites = document.getElementById('declineProceedToPrerequisites');
+        const confirmProceedToPrerequisites = document.getElementById('confirmProceedToPrerequisites');
+        const mappingSuccessModal = document.getElementById('mappingSuccessModal');
+        const closeMappingSuccessModal = document.getElementById('closeMappingSuccessModal');
+        // *** END: NEW MODAL ELEMENTS FOR SAVING MAPPING ***
 
         const showSubjectModal = (subjectToEdit = null) => {
             subjectForm.reset();
@@ -401,7 +461,6 @@
             }
         });
         
-        // *** START: REWIRED MODAL LOGIC ***
         const hideCreateConfirmation = () => createConfirmationModal.classList.add('hidden');
         const showCreateConfirmation = () => createConfirmationModal.classList.remove('hidden');
 
@@ -411,16 +470,13 @@
         const hideSuccess = () => creationSuccessModal.classList.add('hidden');
         const showSuccess = () => creationSuccessModal.classList.remove('hidden');
 
-        // Main form submission triggers the first confirmation modal
         subjectForm.addEventListener('submit', (e) => {
             e.preventDefault();
             showCreateConfirmation();
         });
 
-        // Handle "Cancel" on create confirmation
         cancelCreateBtn.addEventListener('click', hideCreateConfirmation);
 
-        // Handle "Confirm" on create confirmation -> This is where the fetch happens
         confirmCreateBtn.addEventListener('click', () => {
             hideCreateConfirmation();
 
@@ -463,8 +519,8 @@
             })
             .then(data => {
                 hideSubjectModal();
-                createdSubjectData = data; // Store the successful response data
-                showGradeSetupConfirmation(); // Show the next modal
+                createdSubjectData = data;
+                showGradeSetupConfirmation();
             })
             .catch(error => {
                 console.error('Error submitting subject:', error);
@@ -478,25 +534,20 @@
             });
         });
 
-        // Handle "Yes" for grade setup
         confirmGradeSetupBtn.addEventListener('click', () => {
             hideGradeSetupConfirmation();
             window.location.href = `/grade_setup?subjectId=${createdSubjectData.subject.id}`;
         });
 
-        // Handle "No" for grade setup
         declineGradeSetupBtn.addEventListener('click', () => {
             hideGradeSetupConfirmation();
             showSuccess();
         });
 
-        // Handle "OK" on the final success message
         successOkBtn.addEventListener('click', () => {
             hideSuccess();
             location.reload();
         });
-        // *** END: REWIRED MODAL LOGIC ***
-
 
         document.querySelectorAll('.week-toggle-btn').forEach(button => {
             button.addEventListener('click', () => {
@@ -666,12 +717,10 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
 
-            // Title
             doc.setFontSize(20);
             doc.setFont("helvetica", "bold");
             doc.text("Subject Syllabus", 105, 20, null, null, "center");
 
-            // Subject Details Table
             const detailsData = [
                 ['Subject Name:', subject.subject_name],
                 ['Subject Code:', subject.subject_code],
@@ -688,7 +737,6 @@
                 styles: { fontSize: 12 },
             });
 
-            // Lessons Table
             const lessonsData = [];
             if (subject.lessons) {
                 for (let i = 1; i <= 15; i++) {
@@ -1091,10 +1139,23 @@
         
         document.getElementById('editCurriculumButton').addEventListener('click', () => toggleEditMode(!isEditing));
         
-        const saveCurriculumButton = document.getElementById('saveCurriculumButton');
+        // *** START: UPDATED SAVE CURRICULUM LOGIC ***
         saveCurriculumButton.addEventListener('click', () => {
+            if (!curriculumSelector.value) {
+                alert('Please select a curriculum to save.');
+                return;
+            }
+            saveMappingModal.classList.remove('hidden');
+        });
+
+        cancelSaveMapping.addEventListener('click', () => {
+            saveMappingModal.classList.add('hidden');
+        });
+
+        confirmSaveMapping.addEventListener('click', () => {
+            saveMappingModal.classList.add('hidden');
+
             const curriculumId = curriculumSelector.value;
-            if (!curriculumId) return alert('Please select a curriculum to save.');
             const curriculumData = [];
             document.querySelectorAll('#curriculumOverview .semester-dropzone').forEach(dropzone => {
                 const year = parseInt(dropzone.dataset.year, 10);
@@ -1102,25 +1163,57 @@
                 const subjects = [];
                 dropzone.querySelectorAll('.subject-tag').forEach(tag => {
                     const sData = JSON.parse(tag.dataset.subjectData);
-                    subjects.push({ subjectCode: sData.subject_code, subjectName: sData.subject_name, subjectType: sData.subject_type, subjectUnit: sData.subject_unit, lessons: sData.lessons || {} });
+                    subjects.push({
+                        subjectCode: sData.subject_code,
+                        subjectName: sData.subject_name,
+                        subjectType: sData.subject_type,
+                        subjectUnit: sData.subject_unit,
+                        lessons: sData.lessons || {}
+                    });
                 });
-                if (subjects.length > 0) curriculumData.push({ year, semester, subjects });
+                if (subjects.length > 0) {
+                    curriculumData.push({ year, semester, subjects });
+                }
             });
+
             fetch('/api/curriculums/save', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
                 body: JSON.stringify({ curriculumId, curriculumData })
             })
             .then(response => {
-                if (!response.ok) throw new Error('Failed to save.');
+                if (!response.ok) {
+                    throw new Error('Failed to save the curriculum mapping.');
+                }
                 return response.json();
             })
             .then(data => {
-                alert('Subject mapping is done! Proceeding to prerequisites.');
-                window.location.href = `/pre_requisite?curriculumId=${curriculumId}`;
+                // On success, show the next modal instead of alerting
+                proceedToPrerequisitesModal.classList.remove('hidden');
             })
-            .catch(error => alert('An error occurred while saving.'));
+            .catch(error => {
+                console.error('Save Error:', error);
+                alert('An error occurred while saving the curriculum.');
+            });
         });
+
+        declineProceedToPrerequisites.addEventListener('click', () => {
+            proceedToPrerequisitesModal.classList.add('hidden');
+            mappingSuccessModal.classList.remove('hidden');
+        });
+
+        confirmProceedToPrerequisites.addEventListener('click', () => {
+            const curriculumId = curriculumSelector.value;
+            window.location.href = `/pre_requisite?curriculumId=${curriculumId}`;
+        });
+
+        closeMappingSuccessModal.addEventListener('click', () => {
+            mappingSuccessModal.classList.add('hidden');
+        });
+        // *** END: UPDATED SAVE CURRICULUM LOGIC ***
 
         const curriculumSelector = document.getElementById('curriculumSelector');
         const curriculumOverview = document.getElementById('curriculumOverview');

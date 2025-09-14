@@ -2,7 +2,6 @@
 
 @section('content')
 <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-8">
-    {{-- The 'container' and 'mx-auto' classes have been removed from this div --}}
     <div>
         <div class="bg-white p-6 rounded-2xl shadow-lg mb-8">
             <div class="flex flex-col md:flex-row justify-between md:items-center">
@@ -44,6 +43,15 @@
             <div id="prerequisiteChain" class="space-y-4 text-gray-700">
                 <p class="text-center text-gray-500 py-8">Select a curriculum from the dropdown above to view its prerequisite chain.</p>
             </div>
+            
+            {{-- *** START: NEW SAVE BUTTON *** --}}
+            <div class="mt-6 text-right">
+                <button id="savePrerequisiteChainBtn" class="bg-green-600 text-white font-semibold px-6 py-3 rounded-lg hover:bg-green-700 transition-colors shadow-md hidden">
+                    Save
+                </button>
+            </div>
+            {{-- *** END: NEW SAVE BUTTON *** --}}
+
         </div>
     </div>
 </main>
@@ -74,7 +82,7 @@
                                     <input type="text" id="modal-subject-search-input" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="Search for a subject...">
                                 </div>
                                 <ul id="modal-subject-options-list" class="max-h-60 overflow-y-auto">
-                                    </ul>
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -93,6 +101,41 @@
         </div>
     </div>
 </div>
+{{-- Save Prerequisite Confirmation Modal --}}
+<div id="savePrerequisiteModal" class="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-75 hidden">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="relative bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 text-center">
+            {{-- ICON ADDED --}}
+            <div class="w-12 h-12 rounded-full bg-blue-100 p-2 flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-800">Save Prerequisite</h3>
+            <p class="text-sm text-gray-500 mt-2">Are you sure you want to save this prerequisite?</p>
+            <div class="mt-6 flex justify-center gap-4">
+                <button id="cancelSavePrerequisite" class="w-full px-6 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200">Cancel</button>
+                <button id="confirmSavePrerequisite" class="w-full px-6 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- Proceed to Compliance Validator Confirmation Modal --}}
+<div id="proceedToComplianceValidatorModal" class="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-75 hidden">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="relative bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 text-center">
+            {{-- ICON ADDED --}}
+            <div class="w-12 h-12 rounded-full bg-blue-100 p-2 flex items-center justify-center mx-auto mb-4">
+                 <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-800">Proceed to Compliance Validator</h3>
+            <p class="text-sm text-gray-500 mt-2">Do you want to go to the compliance validator to check if your curriculum meets the compliance?</p>
+            <div class="mt-6 flex justify-center gap-4">
+                <button id="declineProceedToComplianceValidator" class="w-full px-6 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200">No</button>
+                <button id="confirmProceedToComplianceValidator" class="w-full px-6 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
@@ -104,6 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Main Page Elements ---
     const setPrerequisiteBtn = document.getElementById('setPrerequisiteBtn');
     const prerequisiteChainContainer = document.getElementById('prerequisiteChain');
+    const savePrerequisiteChainBtn = document.getElementById('savePrerequisiteChainBtn'); // New save button
     
     // --- Main Curriculum Searchable Dropdown Elements ---
     const mainCustomSelector = document.getElementById('custom-curriculum-selector');
@@ -129,6 +173,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalDropdownPanel = document.getElementById('modal-subject-dropdown-panel');
     const modalSearchInput = document.getElementById('modal-subject-search-input');
     const modalOptionsList = document.getElementById('modal-subject-options-list');
+    
+    // --- New Modals for Saving Workflow ---
+    const savePrerequisiteModal = document.getElementById('savePrerequisiteModal');
+    const cancelSavePrerequisite = document.getElementById('cancelSavePrerequisite');
+    const confirmSavePrerequisite = document.getElementById('confirmSavePrerequisite');
+    const proceedToComplianceValidatorModal = document.getElementById('proceedToComplianceValidatorModal');
+    const declineProceedToComplianceValidator = document.getElementById('declineProceedToComplianceValidator');
+    const confirmProceedToComplianceValidator = document.getElementById('confirmProceedToComplianceValidator');
+
 
     // --- Main Curriculum Dropdown Logic ---
     mainSelectorButton.addEventListener('click', (e) => {
@@ -307,8 +360,12 @@ document.addEventListener('DOMContentLoaded', () => {
         prerequisiteChainContainer.innerHTML = '';
         if (Object.keys(prerequisites).length === 0) {
             prerequisiteChainContainer.innerHTML = '<p class="text-center text-gray-500 py-8">No prerequisites have been set for this curriculum yet.</p>';
+            savePrerequisiteChainBtn.classList.add('hidden'); // Hide save button if no data
             return;
         }
+
+        savePrerequisiteChainBtn.classList.remove('hidden'); // Show save button if there is data
+
         const subjectMap = new Map(subjects.map(s => [s.subject_code, s.subject_name]));
         for (const subjectCode in prerequisites) {
             const prereqs = prerequisites[subjectCode];
@@ -351,7 +408,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Event Listeners & Handlers ---
     async function handleSubjectSelection(subjectCode) {
-        modalSubjectCodeInput.value = subjectCode; // Update hidden input for form submission
+        modalSubjectCodeInput.value = subjectCode;
         savePrerequisitesBtn.disabled = !subjectCode;
 
         if (!subjectCode || !selectedCurriculum.id) {
@@ -387,7 +444,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const errorData = await response.json();
                 throw new Error(errorData.message || 'Failed to save prerequisites.');
             }
-            alert('Prerequisites saved successfully!');
+            // *** CHANGE: Do not alert, just hide and refresh data ***
             hideModal();
             fetchPrerequisiteData(data.curriculum_id);
         } catch (error) {
@@ -397,6 +454,31 @@ document.addEventListener('DOMContentLoaded', () => {
             savePrerequisitesBtn.disabled = false;
         }
     });
+
+    // --- New Modal Workflow for Saving ---
+    savePrerequisiteChainBtn.addEventListener('click', () => {
+        savePrerequisiteModal.classList.remove('hidden');
+    });
+
+    cancelSavePrerequisite.addEventListener('click', () => {
+        savePrerequisiteModal.classList.add('hidden');
+    });
+
+    confirmSavePrerequisite.addEventListener('click', () => {
+        savePrerequisiteModal.classList.add('hidden');
+        // On success, show the next modal
+        proceedToComplianceValidatorModal.classList.remove('hidden');
+    });
+
+    declineProceedToComplianceValidator.addEventListener('click', () => {
+        proceedToComplianceValidatorModal.classList.add('hidden');
+    });
+
+    confirmProceedToComplianceValidator.addEventListener('click', () => {
+        // Redirect to the compliance validator page
+        window.location.href = '{{ route('compliance.validator') }}';
+    });
+
 
     // --- Initial Load ---
     const urlParams = new URLSearchParams(window.location.search);
@@ -409,6 +491,7 @@ document.addEventListener('DOMContentLoaded', () => {
             mainSelectorButton.querySelector('span').textContent = selectedCurriculum.name;
             mainSelectorButton.querySelector('span').classList.remove('text-gray-500');
             fetchPrerequisiteData(curriculumIdFromUrl);
+            // *** CHANGE: Automatically show the modal ***
             showModal();
         }
     }
