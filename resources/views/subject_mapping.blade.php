@@ -17,7 +17,7 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1 min-h-0">
             
-            <div class="lg:col-span-1 bg-gray-50 border border-gray-200 rounded-xl p-6 flex flex-col">
+            <div class="lg:col-span-1 bg-gray-50 border border-gray-200 rounded-xl p-6 flex flex-col h-[calc(100vh-200px)]">
                 <div class="pb-4 border-b border-gray-200">
                     <h2 class="text-xl font-semibold text-gray-800"><i class="fas fa-book mr-2"></i>Available Subjects</h2>
                     <p class="text-sm text-gray-500"><i class="fas fa-search mr-2"></i>Find and select subjects to add to the curriculum.</p>
@@ -41,7 +41,7 @@
                 </div>
             </div>
 
-            <div class="lg:col-span-2 bg-gray-50 border border-gray-200 rounded-xl p-6 flex flex-col">
+            <div class="lg:col-span-2 bg-gray-50 border border-gray-200 rounded-xl p-6 flex flex-col h-[calc(100vh-200px)]">
                 <div class="pb-4 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center">
                     <h2 class="text-xl font-semibold text-gray-800 mb-2 sm:mb-0">Curriculum Overview</h2>
                     <select id="curriculumSelector" class="w-full sm:w-auto border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
