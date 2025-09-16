@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-<main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-6">
-    <div class="bg-white rounded-2xl shadow-xl p-8">
+<main class="flex-1 overflow-hidden bg-gray-100 p-6 flex flex-col">
+    <div class="bg-white rounded-2xl shadow-xl p-8 flex-1 flex flex-col">
         
         <div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center">
             <div class="mb-4 sm:mb-0">
@@ -15,7 +15,7 @@
             </button>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1 min-h-0">
             
             <div class="lg:col-span-1 bg-gray-50 border border-gray-200 rounded-xl p-6 flex flex-col">
                 <div class="pb-4 border-b border-gray-200">
@@ -58,7 +58,7 @@
                     <p class="text-gray-500 text-center mt-4">Select a curriculum from the dropdown to start mapping subjects.</p>
                 </div>
                 
-                <div class="mt-8 pt-6 border-t border-gray-200 flex justify-end gap-2">
+                <div class="mt-auto pt-6 border-t border-gray-200 flex justify-end gap-2">
                     <button id="editCurriculumButton" class="px-6 py-3 rounded-lg text-sm font-semibold text-blue-700 bg-white border border-blue-700 hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors shadow-md hidden">
                         <svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z"></path></svg>
                         Edit

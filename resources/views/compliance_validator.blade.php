@@ -1,8 +1,7 @@
 @extends('layouts.app')
 
-@section('content')
-<main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-8">
-    {{-- The 'container' and 'mx-auto' classes have been removed from this div --}}
+ @section('content')
+ <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-8">
     <div>
         {{-- Main Content Section --}}
         <div class="bg-white p-10 md:p-12 rounded-2xl shadow-lg border border-gray-200">
@@ -34,16 +33,53 @@
                     <div class="bg-gray-50 border border-gray-200 rounded-xl p-8">
                         <h3 id="links-header" class="text-lg font-semibold text-gray-800 mb-6 border-b border-gray-200 pb-4"></h3>
 
+                        {{-- NEW: Search Bar --}}
+                        <div class="mb-6">
+                            <input type="text" id="search-bar" placeholder="Search for issuances..." class="w-full max-w-lg px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+
                         {{-- CHED Links Section --}}
-                        <div id="ched-links" class="hidden grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
+                        <div id="ched-links" class="hidden space-y-3">
+                            @php
+                            $cmosByYear = [
+                                '2025' => [
+                                    ['title' => 'CMO No. 1, series of 2025 – Guidelines for Micro-Credential Development, Approval, and Recognition in Higher Education', 'url' => 'https://ched.gov.ph/wp-content/uploads/CMO-No.-1-s.-2025.pdf'],
+                                    ['title' => 'CMO No. 2, series of 2025 – Updated List of Private Higher Education Institutions Granted Autonomous and Deregulated Status by Evaluation', 'url' => 'https://ched.gov.ph/wp-content/uploads/CMO-NO.-02-S.-2025.pdf'],
+                                    ['title' => 'CMO No. 3, series of 2025 – Updated Guidelines for Securing Authority to Travel Abroad for State Universities and Colleges (SUCs)', 'url' => 'https://ched.gov.ph/wp-content/uploads/CMO-No.-3-series-of-2025-Updated-Guidelines-for-Securing-Authority-to-Travel-Abroad-for-State-Universities-and-Colleges-SUCs.pdf'],
+                                    ['title' => 'CMO No. 4, series of 2025 – Revised Policies, Standards and Guidelines for Associate in Radiologictechnology Education (ART) Program', 'url' => 'https://ched.gov.ph/wp-content/uploads/CMO-No.-4-s.-2025.pdf'],
+                                    ['title' => 'CMO No. 5, series of 2025 – Guidelines for the Accreditation of Hospitals and Primary Health Care Facilities for the Clinical Practice of Radiologic/X-RAY Technology Interns', 'url' => 'https://ched.gov.ph/wp-content/uploads/CMO-No.-5-s.-2025.pdf'],
+                                    ['title' => 'CMO No. 6, series of 2025 – Application Process for Authority to Offer Transnational Higher Education Pursuant to Republic Act No. 11448 or The Transnational Higher Education Act', 'url' => 'https://ched.gov.ph/wp-content/uploads/CMO-No.-6-s.-2025.pdf'],
+                                    ['title' => 'CMO No. 7, series of 2025 – Policies, Standards and Guidelines for the Implementation of the National Merchant Marine Aptitude Test (NaMMAT)', 'url' => 'https://ched.gov.ph/wp-content/uploads/CMO-No.-7-s.-2025.pdf'],
+                                    ['title' => 'CMO No. 9, series of 2025 – Updated Guidelines for the Scholarships for Staff and Instructors’ Knowledge Advancement Program (SIKAP) for Full-Time and Part-Time Study', 'url' => 'https://ched.gov.ph/wp-content/uploads/CMO-No.-9-s.-2025.pdf'],
+                                    ['title' => 'CMO No. 10, series of 2025 – Policies and Standards on Centers of Excellence (COE) | Annex A', 'url' => 'https://ched.gov.ph/wp-content/uploads/CMO-No.-10-s.-2025.pdf'],
+                                    ['title' => 'CMO No. 11, series of 2025 – Implementing Rules and Regulations of Republic Act No. 12124, “An Act Institutionalizing the Expanded Tertiary Education Equivalency and Accreditation Program (ETEEAP) and Providing Funds Therefor”', 'url' => 'https://ched.gov.ph/wp-content/uploads/CMO-No.-11-s.-2025.pdf'],
+                                    ['title' => 'CMO No. 12, series of 2025 – Policies and Guidelines on Open Distance and e-Learning (ODeL)', 'url' => 'https://ched.gov.ph/wp-content/uploads/CMO-No.-12-s.-2025.pdf'],
+                                    ['title' => 'CMO No. 13, series of 2025 – Revised Policies and Guidelines for the CHED Merit Scholarship Program (CMSP)', 'url' => 'https://ched.gov.ph/wp-content/uploads/CMO-No.-13-s.-2025.pdf'],
+                                    ['title' => 'CMO No. 14, series of 2025 – Revised Implementing Guidelines for the CHED Scholarship Program for Future Statisticians (ESTATISKOLAR)', 'url' => 'https://ched.gov.ph/wp-content/uploads/CMO-No.-14-s.-2025.pdf'],
+                                    ['title' => 'CMO No. 15, series of 2025 – Updated Policies and Guidelines for the Grant of Autonomous and Deregulated Status to Private Higher Education Institutions', 'url' => 'https://ched.gov.ph/wp-content/uploads/CMO-No.-15-s.-2025.pdf'],
+                                ],
+                            ];
+                            @endphp
+
                             @for ($year = 2025; $year >= 1994; $year--)
-                                <a href="https://ched.gov.ph/{{ $year }}-ched-memorandum-orders/" target="_blank" class="group block p-3 rounded-lg hover:bg-blue-100 transition-colors duration-200">
-                                    <span class="font-medium text-blue-700 group-hover:text-blue-800">
-                                        {{ $year }} CHED Memorandum Orders
-                                    </span>
-                                </a>
+                                <div class="ched-accordion border border-gray-200 rounded-lg">
+                                    <button type="button" class="accordion-header w-full flex justify-between items-center p-4 bg-white hover:bg-gray-100 transition">
+                                        <span class="font-semibold text-gray-700">{{ $year }} CHED Memorandum Orders</span>
+                                        <svg class="w-5 h-5 text-gray-500 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                    </button>
+                                    <div class="accordion-content hidden p-4 border-t border-gray-200 bg-white space-y-2">
+                                        @if (isset($cmosByYear[(string)$year]))
+                                            @foreach ($cmosByYear[(string)$year] as $cmo)
+                                                <a href="{{ $cmo['url'] }}" target="_blank" class="block text-blue-600 hover:underline p-2 rounded-md hover:bg-blue-50">{{ $cmo['title'] }}</a>
+                                            @endforeach
+                                        @else
+                                            <a href="https://ched.gov.ph/{{ $year }}-ched-memorandum-orders/" target="_blank" class="block text-blue-600 hover:underline p-2 rounded-md hover:bg-blue-50">View all {{ $year }} issuances on the CHED website</a>
+                                        @endif
+                                    </div>
+                                </div>
                             @endfor
                         </div>
+
 
                         {{-- DepEd Links Section --}}
                         <div id="deped-links" class="hidden space-y-3">
@@ -132,15 +168,16 @@
             </div>
         </div>
     </div>
-</main>
+ </main>
 
-<script>
-document.addEventListener('DOMContentLoaded', () => {
+ <script>
+ document.addEventListener('DOMContentLoaded', () => {
     const agencyButton = document.getElementById('agency-button');
     const agencyMenu = document.getElementById('agency-menu');
     const linksContainer = document.getElementById('links-container');
     const selectedAgencySpan = document.getElementById('selected-agency');
     const linksHeader = document.getElementById('links-header');
+    const searchBar = document.getElementById('search-bar'); // Get the search bar
 
     // Toggle dropdown menu
     agencyButton.addEventListener('click', () => {
@@ -176,6 +213,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (targetSection) {
                 targetSection.classList.remove('hidden');
             }
+
+            // MODIFIED: Reset search bar when changing agency
+            searchBar.value = '';
+            searchBar.dispatchEvent(new Event('input', { bubbles: true }));
         });
     });
 
@@ -187,7 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Accordion Logic for DepEd links
+    // Accordion Logic for both CHED and DepEd links
     document.querySelectorAll('.accordion-header').forEach(button => {
         button.addEventListener('click', () => {
             const content = button.nextElementSibling;
@@ -198,6 +239,56 @@ document.addEventListener('DOMContentLoaded', () => {
             icon.classList.toggle('rotate-180', isHidden);
         });
     });
-});
-</script>
-@endsection
+
+    // NEW: Search bar functionality
+    searchBar.addEventListener('input', () => {
+        const searchTerm = searchBar.value.toLowerCase();
+
+        // Find the currently visible link section (either CHED or DepEd)
+        const activeLinksSection = linksContainer.querySelector('#ched-links:not(.hidden), #deped-links:not(.hidden)');
+        if (!activeLinksSection) return;
+
+        // Get all accordions within the active section
+        const allAccordions = activeLinksSection.querySelectorAll('.ched-accordion, .deped-accordion');
+
+        allAccordions.forEach(accordion => {
+            let hasVisibleContent = false;
+
+            // Hide or show individual links first
+            const links = accordion.querySelectorAll('a');
+            links.forEach(link => {
+                const linkText = link.textContent.toLowerCase();
+                if (linkText.includes(searchTerm)) {
+                    link.style.display = 'block';
+                    hasVisibleContent = true;
+                } else {
+                    link.style.display = 'none';
+                }
+            });
+
+            // Special handling for DepEd Academic/TechPro sub-groups
+            const subGroups = accordion.querySelectorAll('.accordion-content > div[class*="space-y"]');
+            if (subGroups.length > 0) {
+                subGroups.forEach(group => {
+                    // Check if this subgroup has any visible links left
+                    const visibleLinksInGroup = group.querySelectorAll('a[style*="display: block"]');
+                    if (visibleLinksInGroup.length > 0) {
+                        group.style.display = 'block';
+                        hasVisibleContent = true;
+                    } else {
+                        group.style.display = 'none';
+                    }
+                });
+            }
+
+            // Finally, hide or show the entire accordion based on content
+            if (hasVisibleContent) {
+                accordion.style.display = 'block';
+            } else {
+                accordion.style.display = 'none';
+            }
+        });
+    });
+ });
+ </script>
+ @endsection
