@@ -132,11 +132,15 @@
                         @for ($i = 1; $i <= 15; $i++)
                         <div class="border border-gray-200 rounded-lg">
                             <button type="button" class="week-toggle-btn w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 transition-colors" data-week="{{ $i }}">
-                                <span class="font-semibold text-gray-700">Week {{ $i }}</span>
+                                <span class="font-sans font-semibold text-gray-700">Week {{ $i }}</span>
                                 <svg class="w-5 h-5 text-gray-500 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                             </button>
                             <div class="week-content hidden p-5 border-t border-gray-200 bg-white">
                                 <textarea id="week-{{ $i }}-lessons" name="week-{{ $i }}-lessons" class="w-full h-24 p-3 border border-gray-300 rounded-lg resize-y focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors font-mono text-sm" style="min-height: 5rem;" placeholder="Topic for Week {{ $i }}..."></textarea>
+                                <div class="mt-2">
+                                    <label for="week-{{ $i }}-image" class="block text-sm font-medium text-gray-700">Upload Image</label>
+                                    <input type="file" id="week-{{ $i }}-image" name="week-{{ $i }}-image" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                                </div>
                                 <div class="flex justify-end mt-2">
                                     <button type="button" class="generate-lesson-btn px-3 py-1.5 text-xs font-semibold text-white bg-green-600 hover:bg-green-700 rounded-md transition-colors" data-week="{{ $i }}">
                                         Generate Detailed Lesson
