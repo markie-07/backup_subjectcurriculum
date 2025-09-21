@@ -210,4 +210,18 @@ class CurriculumController extends Controller
             return response()->json(['message' => 'Failed to remove subject: ' . $e->getMessage()], 500);
         }
     }
+
+    public function getCurriculumDetailsForExport($id)
+{
+    try {
+        // Eager load subjects and their prerequisites
+        $curriculum = Curriculum::with('subjects.prerequisites')->findOrFail($id);
+        return response()->json($curriculum);
+    } catch (\Exception $e) {
+        return response()->json([
+            'message' => 'A database error occurred while fetching curriculum details.',
+            'error' => $e->getMessage()
+        ], 500);
+    }
+}
 }

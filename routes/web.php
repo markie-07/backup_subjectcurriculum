@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PrerequisiteController;
 use App\Http\Controllers\SubjectHistoryController;
 use App\Http\Controllers\EquivalencyToolController;
-
+use App\Http\Controllers\CurriculumExportToolController;
 
 Route::get('/', function () {
     return view('dashboard');
@@ -14,8 +14,6 @@ Route::get('/', function () {
 Route::get('/curriculum_builder', function () {
     return view('curriculum_builder');
 })->name('curriculum_builder');
-
-// Note: The POST route for curriculum creation was moved to api.php
 
 Route::get('/subject_mapping', function () {
     return view('subject_mapping');
@@ -27,10 +25,6 @@ Route::get('/pre_requisite', [PrerequisiteController::class, 'index'])->name('pr
 Route::get('/grade_setup', function () {
     return view('grade_setup');
 })->name('grade_setup');
-
-Route::get('/curriculum_export_tool', function () {
-    return view('curriculum_export_tool');
-})->name('curriculum_export_tool');
 
 Route::get('/equivalency_tool', function () {
     return view('equivalency_tool');
@@ -53,3 +47,9 @@ Route::post('/compliance-validator/validate', function () {
 
 // EQUIVALENCY TOOL
 Route::get('/equivalency_tool', [EquivalencyToolController::class, 'index'])->name('equivalency_tool');
+
+// CURRICULUM EXPORT
+Route::get('/curriculum_export_tool', [CurriculumExportToolController::class, 'index'])->name('curriculum_export_tool');
+Route::post('/curriculum_export_tool', [CurriculumExportToolController::class, 'store'])->name('curriculum_export_tool.store');
+
+

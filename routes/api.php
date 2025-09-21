@@ -48,3 +48,5 @@ Route::delete('/equivalencies/{equivalency}', [EquivalencyToolController::class,
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::get('/curriculum/{id}/details', [CurriculumController::class, 'getCurriculumDetailsForExport']);
