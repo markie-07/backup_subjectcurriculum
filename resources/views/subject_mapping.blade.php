@@ -49,7 +49,7 @@
                     </select>
                 </div>
 
-                <div id="grand-total-container" class="hidden mt-4 p-4 bg-blue-100 border border-blue-200 text-blue-800 rounded-lg shadow-inner flex justify-between items-center">
+                <div id="grand-total-container" class="hidden mt-4 p-4 bg-gray-100 border border-gray-200 text-gray-800 rounded-lg flex justify-between items-center">
                     <span class="text-lg font-bold">Total Curriculum Units:</span>
                     <span id="grand-total-units" class="text-2xl font-extrabold">0</span>
                 </div>
@@ -65,20 +65,17 @@
                     </button>
                     <button id="saveCurriculumButton" class="px-6 py-3 rounded-lg text-sm font-semibold text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors shadow-md" disabled>
                         <svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v6a2 2 0 002 2h6m4-4H9m0 0V9m0 0V5a2 2 0 012-2h6a2 2 0 012 2v6a2 2 0 01-2 2h-3m-4-4V9"></path></svg>
-                        Save and Proceed to Prerequisites
+                        Save the Mapping
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
-    {{-- START: ALL MODALS --}}
-
     {{-- Add/Edit Subject Modal --}}
     <div id="addSubjectModal" class="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-75 transition-opacity duration-300 ease-out hidden">
         <div class="flex items-start justify-center min-h-screen p-4 pt-8">
-            <form id="subjectForm" class="relative bg-white w-full max-w-6xl rounded-2xl shadow-2xl transform scale-95 opacity-0 transition-all duration-300 ease-out flex flex-col" id="modal-subject-panel">
-                {{-- HEADER --}}
+            <form id="subjectForm" class="relative bg-white w-11/12 rounded-2xl shadow-2xl transform scale-95 opacity-0 transition-all duration-300 ease-out flex flex-col" id="modal-subject-panel">
                 <div class="flex justify-between items-center p-5 border-b border-gray-200">
                     <h2 id="modal-title" class="text-xl font-bold text-gray-800">Create New Subject</h2>
                     <button id="closeSubjectModalButton" type="button" class="text-gray-400 hover:text-gray-600 focus:outline-none transition-colors duration-200" aria-label="Close modal">
@@ -87,7 +84,7 @@
                 </div>
 
                 {{-- BODY (Scrollable) --}}
-                <div class="p-6 max-h-[75vh] overflow-y-auto space-y-6">
+                <div class="p-6 h-[80vh] overflow-y-auto space-y-6">
                     <input type="hidden" id="subjectId" name="subjectId">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="md:col-span-1">
@@ -137,10 +134,6 @@
                             </button>
                             <div class="week-content hidden p-5 border-t border-gray-200 bg-white">
                                 <textarea id="week-{{ $i }}-lessons" name="week-{{ $i }}-lessons" class="w-full h-24 p-3 border border-gray-300 rounded-lg resize-y focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors font-mono text-sm" style="min-height: 5rem;" placeholder="Topic for Week {{ $i }}..."></textarea>
-                                <div class="mt-2">
-                                    <label for="week-{{ $i }}-image" class="block text-sm font-medium text-gray-700">Upload Image</label>
-                                    <input type="file" id="week-{{ $i }}-image" name="week-{{ $i }}-image" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-                                </div>
                                 <div class="flex justify-end mt-2">
                                     <button type="button" class="generate-lesson-btn px-3 py-1.5 text-xs font-semibold text-white bg-green-600 hover:bg-green-700 rounded-md transition-colors" data-week="{{ $i }}">
                                         Generate Detailed Lesson
@@ -174,14 +167,14 @@
     {{-- Subject Details Modal --}}
     <div id="subjectDetailsModal" class="fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-60 transition-opacity duration-300 ease-out hidden">
         <div class="flex items-start justify-center min-h-screen p-4 pt-8">
-            <div class="relative bg-white w-full max-w-6xl rounded-2xl shadow-2xl transform scale-95 opacity-0 transition-all duration-300 ease-out flex flex-col" id="modal-details-panel">
+            <div class="relative bg-white w-11/12 rounded-2xl shadow-2xl transform scale-95 opacity-0 transition-all duration-300 ease-out flex flex-col" id="modal-details-panel">
                 <div class="flex justify-between items-center p-5 border-b border-gray-200">
                     <h2 id="detailsSubjectName" class="text-xl font-bold text-gray-800"></h2>
                     <button id="closeDetailsModalButton" class="text-gray-400 hover:text-gray-600 focus:outline-none transition-colors duration-200" aria-label="Close modal">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
                 </div>
-                <div class="p-6 max-h-[75vh] overflow-y-auto">
+                <div class="p-6 h-[80vh] overflow-y-auto">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 mb-6">
                         <div>
                             <p class="text-sm font-medium text-gray-500">Subject Code</p>

@@ -137,12 +137,12 @@
 {{-- Modal for Viewing Subject Details (Consistent with subject_mapping.blade.php) --}}
 <div id="subjectDetailsModal" class="fixed inset-0 z-[60] overflow-y-auto bg-black bg-opacity-60 hidden">
     <div class="flex items-start justify-center min-h-screen p-4 pt-8">
-        <div class="relative bg-white w-full max-w-6xl rounded-2xl shadow-2xl">
+        <div class="relative bg-white w-11/12 h-[95vh] rounded-2xl shadow-2xl flex flex-col" id="modal-details-panel">
             <div class="flex justify-between items-center p-5 border-b border-gray-200">
                 <h2 id="detailsSubjectName" class="text-xl font-bold text-gray-800"></h2>
                 <button id="closeDetailsModalButton" class="text-gray-400 hover:text-gray-600"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
             </div>
-            <div class="p-6 max-h-[80vh] overflow-y-auto">
+            <div class="p-6 flex-1 overflow-y-auto">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 mb-6">
                     <div><p class="text-sm font-medium text-gray-500">Subject Code</p><p id="detailsSubjectCode" class="text-base font-semibold text-gray-800"></p></div>
                     <div><p class="text-sm font-medium text-gray-500">Type</p><p id="detailsSubjectType" class="text-base font-semibold text-gray-800"></p></div>
