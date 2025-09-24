@@ -32,21 +32,18 @@ Route::post('/generate-lesson-plan', [AiController::class, 'generateLessonPlan']
 Route::get('/prerequisites/{curriculum}', [PrerequisiteController::class, 'fetchData']);
 Route::post('/prerequisites', [PrerequisiteController::class, 'store']);
 
-// --- Grade Routes ---
-Route::get('/grades', [GradeController::class, 'index']);
-Route::post('/grades', [GradeController::class, 'store']);
-Route::get('/grades/{id}', [GradeController::class, 'show']);
-Route::put('/grades/{id}', [GradeController::class, 'update']);
-Route::delete('/grades/{id}', [GradeController::class, 'destroy']);
+// Routes for Grade Setup
+Route::get('/subjects', [SubjectController::class, 'index']); // You already have this
+Route::get('/grades/{id}', [GradeController::class, 'show']); // Fetches grade setup for a subject
+Route::post('/grades', [GradeController::class, 'store']);   // Saves or updates a grade setup
+
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
 
 // --- Equivalency Tool Routes ---
 Route::post('/equivalencies', [EquivalencyToolController::class, 'store']);
 Route::patch('/equivalencies/{equivalency}', [EquivalencyToolController::class, 'update']);
 Route::delete('/equivalencies/{equivalency}', [EquivalencyToolController::class, 'destroy']);
-
-// --- Default User Route ---
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
 
 Route::get('/curriculum/{id}/details', [CurriculumController::class, 'getCurriculumDetailsForExport']);

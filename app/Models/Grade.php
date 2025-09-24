@@ -13,19 +13,22 @@ class Grade extends Model
     /**
      * The attributes that are mass assignable.
      *
-     * @var array<int, string>
+     * @var array
      */
     protected $fillable = [
         'subject_id',
-        'aae',
-        'evaluation',
-        'assignment',
-        'exam',
+        'components', // This is our new JSON column
     ];
 
     /**
-     * Get the subject that this grade scheme belongs to.
+     * The attributes that should be cast.
+     *
+     * @var array
      */
+    protected $casts = [
+        'components' => 'array', // This line is crucial!
+    ];
+
     public function subject(): BelongsTo
     {
         return $this->belongsTo(Subject::class, 'subject_id', 'id');

@@ -12,12 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('grades', function (Blueprint $table) {
-            $table->id(); // Use Laravel's default 'id' primary key
-            $table->unsignedBigInteger('subject_id')->unique(); // The foreign key to the subjects table
-            $table->integer('aae');
-            $table->integer('evaluation');
-            $table->integer('assignment');
-            $table->integer('exam');
+            $table->id();
+            $table->unsignedBigInteger('subject_id')->unique();
+
+            // This single JSON column will store the entire nested grade structure
+            // (Prelim, Midterm, Finals, and their sub-components).
+            $table->json('components')->nullable();
+
             $table->timestamps();
 
             // Defines the relationship between the 'grades' and 'subjects' tables

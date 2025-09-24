@@ -14,45 +14,30 @@ class GradeController extends Controller
 
     public function show($id)
     {
-        return response()->json(Grade::with('subject')->findOrFail($id));
+        // We now fetch the grade setup using the subject_id
+        $grade = Grade::with('subject')->where('subject_id', $id)->first();
+
+        // If no setup exists for a subject, return null so the frontend can use a default
+        if (!$grade) {
+            return response()->json(['components' => null]);
+        }
+        return response()->json($grade);
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'subject_id' => 'required|exists:subjects,id|unique:grades,subject_id',
-            'aae' => 'required|integer|min:0|max:100',
-            'evaluation' => 'required|integer|min:0|max:100',
-            'assignment' => 'required|integer|min:0|max:100',
-            'exam' => 'required|integer|min:0|max:100',
+            'subject_id' => 'required|exists:subjects,id',
+            'components' => 'required|array', // Ensure 'components' is a valid array/object
         ]);
 
-        if (array_sum(array_slice($validated, 1)) !== 100) {
-            return response()->json(['message' => 'The sum of all grade components must be 100.'], 422);
-        }
+        // This command finds a grade setup for the subject_id or creates a new one.
+        // It's a clean way to handle both creating and updating.
+        $grade = Grade::updateOrCreate(
+            ['subject_id' => $validated['subject_id']],
+            ['components' => $validated['components']]
+        );
 
-        $grade = Grade::create($validated);
-        
         return response()->json($grade->load('subject'), 201);
-    }
-
-    public function update(Request $request, $id)
-    {
-        $grade = Grade::findOrFail($id);
-        
-        $validated = $request->validate([
-            'aae' => 'required|integer|min:0|max:100',
-            'evaluation' => 'required|integer|min:0|max:100',
-            'assignment' => 'required|integer|min:0|max:100',
-            'exam' => 'required|integer|min:0|max:100',
-        ]);
-
-        if (array_sum($validated) !== 100) {
-            return response()->json(['message' => 'The sum of all grade components must be 100.'], 422);
-        }
-
-        $grade->update($validated);
-
-        return response()->json($grade->load('subject'));
     }
 }
