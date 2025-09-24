@@ -6,6 +6,7 @@ use App\Http\Controllers\PrerequisiteController;
 use App\Http\Controllers\SubjectHistoryController;
 use App\Http\Controllers\EquivalencyToolController;
 use App\Http\Controllers\CurriculumExportToolController;
+use App\Http\Controllers\GradeController;
 
 Route::get('/', function () {
     return view('dashboard');
@@ -19,16 +20,12 @@ Route::get('/subject_mapping', function () {
     return view('subject_mapping');
 })->name('subject_mapping');
 
-// UPDATED ROUTE: This now calls the controller to fetch the necessary data.
 Route::get('/pre_requisite', [PrerequisiteController::class, 'index'])->name('pre_requisite');
 
-Route::get('/grade_setup', function () {
-    return view('grade_setup');
-})->name('grade_setup');
+// This is the only route needed for the grade setup page itself.
+Route::get('/grade-setup', [GradeController::class, 'setup'])->name('grade_setup');
 
-Route::get('/equivalency_tool', function () {
-    return view('equivalency_tool');
-})->name('equivalency_tool');
+Route::get('/equivalency_tool', [EquivalencyToolController::class, 'index'])->name('equivalency_tool');
 
 Route::get('/subject_history', [SubjectHistoryController::class, 'index'])->name('subject_history');
 Route::post('/subject_history/{history}/retrieve', [SubjectHistoryController::class, 'retrieve'])->name('subject_history.retrieve');
@@ -45,11 +42,6 @@ Route::post('/compliance-validator/validate', function () {
     // Handle validation logic here
 })->name('ched.validator.validate');
 
-// EQUIVALENCY TOOL
-Route::get('/equivalency_tool', [EquivalencyToolController::class, 'index'])->name('equivalency_tool');
-
 // CURRICULUM EXPORT
 Route::get('/curriculum_export_tool', [CurriculumExportToolController::class, 'index'])->name('curriculum_export_tool');
 Route::post('/curriculum_export_tool', [CurriculumExportToolController::class, 'store'])->name('curriculum_export_tool.store');
-
-

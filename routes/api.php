@@ -17,6 +17,8 @@ Route::put('/curriculums/{id}', [CurriculumController::class, 'update']);
 Route::delete('/curriculums/{id}', [CurriculumController::class, 'destroy']);
 Route::post('/curriculums/save', [CurriculumController::class, 'saveSubjects']);
 Route::post('/curriculum/remove-subject', [CurriculumController::class, 'removeSubject']);
+Route::get('/curriculum/{id}/details', [CurriculumController::class, 'getCurriculumDetailsForExport']);
+
 
 // --- Subject Routes ---
 Route::get('/subjects', [SubjectController::class, 'index']);
@@ -24,26 +26,28 @@ Route::post('/subjects', [SubjectController::class, 'store']);
 Route::get('/subjects/{id}', [SubjectController::class, 'show']);
 Route::put('/subjects/{id}', [SubjectController::class, 'update']);
 
+
 // --- AI Generation Routes ---
 Route::post('/generate-lesson-topics', [AiController::class, 'generateLessonTopics']);
 Route::post('/generate-lesson-plan', [AiController::class, 'generateLessonPlan']);
+
 
 // --- Prerequisite Routes ---
 Route::get('/prerequisites/{curriculum}', [PrerequisiteController::class, 'fetchData']);
 Route::post('/prerequisites', [PrerequisiteController::class, 'store']);
 
-// Routes for Grade Setup
-Route::get('/subjects', [SubjectController::class, 'index']); // You already have this
-Route::get('/grades/{id}', [GradeController::class, 'show']); // Fetches grade setup for a subject
-Route::post('/grades', [GradeController::class, 'store']);   // Saves or updates a grade setup
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// --- Grade Routes ---
+Route::post('/grades', [GradeController::class, 'store']);
+Route::get('/grades/{subjectId}', [GradeController::class, 'show']);
+
 
 // --- Equivalency Tool Routes ---
 Route::post('/equivalencies', [EquivalencyToolController::class, 'store']);
 Route::patch('/equivalencies/{equivalency}', [EquivalencyToolController::class, 'update']);
 Route::delete('/equivalencies/{equivalency}', [EquivalencyToolController::class, 'destroy']);
 
-Route::get('/curriculum/{id}/details', [CurriculumController::class, 'getCurriculumDetailsForExport']);
+
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});

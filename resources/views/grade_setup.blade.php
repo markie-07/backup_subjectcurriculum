@@ -4,8 +4,8 @@
 <style>
     .progress-ring__circle { transition: stroke-dashoffset 0.35s; transform: rotate(-90deg); transform-origin: 50% 50%; }
     .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
-    .component-row input { background-color: #f8fafc; }
-    .component-row:hover input { background-color: #f1f5f9; }
+    .component-row input { background-color: transparent; }
+    .grade-history-card { cursor: pointer; }
 </style>
 
 <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-4 sm:p-6 md:p-8">
@@ -73,67 +73,104 @@
             </form>
         </div>
 
-        {{-- Right Side Panel (e.g., Grading Scale) --}}
+        {{-- Grade History --}}
         <div class="lg:col-span-1 bg-white/70 backdrop-blur-xl p-6 md:p-8 rounded-2xl shadow-lg border border-gray-200/80">
-            <h2 class="text-xl font-bold text-gray-700 mb-4 pb-3 border-b">Grading Scale</h2>
-            {{-- Placeholder for your grading scale table or other content --}}
-            <p class="text-gray-600">Your grading scale information can be displayed here.</p>
+            <h2 class="text-xl font-bold text-gray-700 mb-4 pb-3 border-b">Grade History</h2>
+            <div id="grade-history-container" class="space-y-4">
+                 @if(isset($subjects) && $subjects->count() > 0)
+                    @foreach($subjects as $subject)
+                        <div class="grade-history-card p-4 border rounded-lg hover:bg-gray-50 transition-colors duration-200" data-subject-id="{{ $subject->id }}">
+                            <p class="font-semibold text-gray-800">{{ $subject->subject_name }}</p>
+                            <p class="text-sm text-gray-500">{{ $subject->subject_code }}</p>
+                        </div>
+                    @endforeach
+                @else
+                    <p id="no-history-message" class="text-gray-500">No subjects with grade schemes.</p>
+                @endif
+            </div>
         </div>
     </div>
 </main>
+
+{{-- Grade Details Modal --}}
+<div id="grade-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+    <div class="relative top-20 mx-auto p-5 border w-full max-w-2xl shadow-lg rounded-md bg-white">
+        <div class="flex justify-between items-center pb-3 border-b">
+            <h3 class="text-lg font-bold text-gray-800">Grade Component Details</h3>
+            <button id="close-modal-btn" class="text-gray-500 hover:text-gray-800">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        <div id="modal-content" class="mt-4 text-sm">
+            {{-- Grade details will be loaded here --}}
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    // --- STATE & CONFIG ---
     let subjects = [];
     const defaultStructure = {
-        prelim: { weight: 30, components: [ { name: "Class Standing", weight: 40, sub_components: [ { name: "Attendance", weight: 10 }, { name: "Written Works", weight: 50 }, { name: "Performance Task", weight: 40 } ] }, { name: "Project", weight: 25, sub_components: [ { name: "Course-Based Output", weight: 100 } ] }, { name: "Examination", weight: 35, sub_components: [ { name: "Written Examination", weight: 100 } ] } ] },
-        midterm: { weight: 30, components: [ { name: "Class Standing", weight: 40, sub_components: [ { name: "Attendance", weight: 10 }, { name: "Written Works", weight: 50 }, { name: "Performance Task", weight: 40 } ] }, { name: "Project", weight: 25, sub_components: [ { name: "Course-Based Output", weight: 100 } ] }, { name: "Examination", weight: 35, sub_components: [ { name: "Written Examination", weight: 100 } ] } ] },
-        finals: { weight: 40, components: [ { name: "Class Standing", weight: 40, sub_components: [ { name: "Attendance", weight: 10 }, { name: "Written Works", weight: 50 }, { name: "Performance Task", weight: 40 } ] }, { name: "Project", weight: 25, sub_components: [ { name: "Course-Based Output", weight: 100 } ] }, { name: "Examination", weight: 35, sub_components: [ { name: "Written Examination", weight: 100 } ] } ] }
+        prelim: { weight: 30, components: [] },
+        midterm: { weight: 30, components: [] },
+        finals: { weight: 40, components: [] }
     };
 
-    // --- ELEMENT SELECTORS ---
     const accordionContainer = document.getElementById('semestral-grade-accordion');
     const totalWeightSpan = document.getElementById('total-weight');
     const progressCircle = document.getElementById('progress-circle');
     const addGradeBtn = document.getElementById('add-grade-btn');
     const subjectSelect = document.getElementById('subject-select');
+    const gradeHistoryContainer = document.getElementById('grade-history-container');
+    const gradeModal = document.getElementById('grade-modal');
+    const closeModalBtn = document.getElementById('close-modal-btn');
+    const modalContent = document.getElementById('modal-content');
 
-    // --- TEMPLATE FUNCTIONS ---
     const createRow = (isSub, period, component = { name: '', weight: 0 }) => {
         const tr = document.createElement('tr');
-        tr.className = `component-row ${isSub ? 'sub-component-row' : 'main-component-row'}`;
+        tr.className = `component-row ${isSub ? 'sub-component-row border-l-4 border-gray-200' : 'main-component-row'} hover:bg-gray-50`;
         const namePlaceholder = isSub ? "Sub-component Name" : "Main Component Name";
         const inputClass = isSub ? 'sub-input' : 'main-input';
         
         tr.innerHTML = `
-            <td class="p-2 ${isSub ? 'pl-8' : 'pl-4'}">
-                <input type="text" placeholder="${namePlaceholder}" value="${component.name}" class="component-name-input w-full border-0 focus:ring-0 p-1 rounded">
+            <td class="p-2 ${isSub ? 'pl-6' : 'pl-4'} align-middle">
+                <input type="text" placeholder="${namePlaceholder}" value="${component.name}" class="component-name-input w-full border-0 focus:ring-0 p-1 rounded bg-transparent">
             </td>
-            <td class="p-2">
-                <input type="number" value="${component.weight}" class="${inputClass} w-full text-center font-bold border-gray-300 rounded-md p-1">
+            <td class="p-2 w-28 align-middle">
+                <input type="number" value="${component.weight}" class="${inputClass} w-full text-center font-semibold border-gray-300 rounded-lg p-2 shadow-sm focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500">
             </td>
-            <td class="p-2 text-center">
-                ${!isSub ? `<button type="button" class="add-sub-btn text-blue-500 hover:text-blue-700 p-1" title="Add Sub-component">➕</button>` : ''}
-                <button type="button" class="remove-row-btn text-red-500 hover:text-red-700 p-1" title="Remove Row">🗑️</button>
+            <td class="p-2 w-28 text-center align-middle">
+                <div class="flex items-center justify-center gap-1">
+                    ${!isSub ? `<button type="button" class="add-sub-btn flex items-center justify-center w-8 h-8 text-gray-400 hover:text-blue-600 hover:bg-blue-100 rounded-full transition-colors" title="Add Sub-component"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" /></svg></button>` : '<span class="w-8 h-8"></span>'}
+                    <button type="button" class="remove-row-btn flex items-center justify-center w-8 h-8 text-gray-400 hover:text-red-600 hover:bg-red-100 rounded-full transition-colors" title="Remove Row"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z" clip-rule="evenodd" /></svg></button>
+                </div>
             </td>
         `;
         return tr;
     };
 
-    // --- EVENT HANDLERS & LOGIC ---
+    const resizeOpenAccordion = (element) => {
+        const content = element.closest('.accordion-content');
+        if (content && content.style.maxHeight && content.style.maxHeight !== '0px') {
+            content.style.maxHeight = content.scrollHeight + "px";
+        }
+    };
+
     const handleDynamicEvents = (e) => {
         const target = e.target;
-        if (target.classList.contains('add-component-btn')) {
+        if (target.closest('.add-component-btn')) {
             const tbody = target.closest('.accordion-content').querySelector('.component-tbody');
             tbody.appendChild(createRow(false, tbody.closest('.period-container').dataset.period));
+            resizeOpenAccordion(tbody);
         } else if (target.closest('.add-sub-btn')) {
             const parentRow = target.closest('tr');
             const newSubRow = createRow(true, parentRow.closest('.period-container').dataset.period);
             parentRow.insertAdjacentElement('afterend', newSubRow);
+            resizeOpenAccordion(parentRow);
         } else if (target.closest('.remove-row-btn')) {
             const rowToRemove = target.closest('tr');
-            // If it's a main row, also remove its sub-components
+            const accordionContent = rowToRemove.closest('.accordion-content');
             if (rowToRemove.classList.contains('main-component-row')) {
                 let nextRow = rowToRemove.nextElementSibling;
                 while (nextRow && nextRow.classList.contains('sub-component-row')) {
@@ -143,11 +180,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
             rowToRemove.remove();
+            if (accordionContent && accordionContent.style.maxHeight && accordionContent.style.maxHeight !== '0px') {
+                accordionContent.style.maxHeight = accordionContent.scrollHeight + "px";
+            }
         }
         calculateAndUpdateTotals();
     };
     
-    // --- CALCULATIONS & VALIDATION ---
     const calculateAndUpdateTotals = () => {
         let semestralTotal = 0;
         document.querySelectorAll('.semestral-input').forEach(input => semestralTotal += Number(input.value) || 0);
@@ -178,8 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 let hasSubComponents = false;
                 while (nextRow && nextRow.classList.contains('sub-component-row')) {
                     hasSubComponents = true;
-                    const input = nextRow.querySelector('.sub-input');
-                    subComponentTotal += Number(input.value) || 0;
+                    subComponentTotal += Number(nextRow.querySelector('.sub-input').value) || 0;
                     nextRow = nextRow.nextElementSibling;
                 }
                 
@@ -195,7 +233,6 @@ document.addEventListener('DOMContentLoaded', () => {
         addGradeBtn.disabled = semestralTotal !== 100 || !allSubTotalsCorrect || !subjectSelect.value;
     };
 
-    // --- DATA HANDLING ---
     const getGradeDataFromDOM = () => {
         const data = {};
         document.querySelectorAll('.period-container').forEach(container => {
@@ -210,7 +247,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     weight: Number(mainRow.querySelector('.main-input').value) || 0,
                     sub_components: []
                 };
-
                 let nextRow = mainRow.nextElementSibling;
                 while (nextRow && nextRow.classList.contains('sub-component-row')) {
                     mainComponent.sub_components.push({
@@ -227,17 +263,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const loadGradeDataToDOM = (componentsData) => {
         const dataToLoad = componentsData || defaultStructure;
-        
         Object.keys(dataToLoad).forEach(period => {
             const periodData = dataToLoad[period];
             const container = document.querySelector(`.period-container[data-period="${period}"]`);
             if (!container) return;
-
             container.querySelector('.semestral-input').value = periodData.weight || 0;
             const tbody = container.querySelector('.component-tbody');
-            tbody.innerHTML = ''; // Clear existing rows
-
-            periodData.components.forEach(component => {
+            tbody.innerHTML = ''; 
+            (periodData.components || []).forEach(component => {
                 const mainRow = createRow(false, period, component);
                 tbody.appendChild(mainRow);
                 (component.sub_components || []).forEach(sub => {
@@ -249,11 +282,13 @@ document.addEventListener('DOMContentLoaded', () => {
         calculateAndUpdateTotals();
     };
 
-    // --- API CALLS ---
+    // --- THIS IS THE UPDATED FUNCTION ---
     const fetchAPI = async (url, options = {}) => {
         try {
+            // Add "/api/" to the start of the URL.
+            const apiUrl = `/api/${url}`;
             options.headers = { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value, 'Accept': 'application/json', ...options.headers };
-            const response = await fetch(url, options);
+            const response = await fetch(apiUrl, options);
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.message || 'API Error');
@@ -266,15 +301,26 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     
     const fetchAndPopulateSubjects = () => {
-        fetchAPI('/api/subjects').then(data => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const newSubjectId = urlParams.get('new_subject_id');
+        const newSubjectName = urlParams.get('new_subject_name');
+
+        fetchAPI('subjects').then(data => {
             subjects = data;
             subjectSelect.innerHTML = '<option value="" disabled selected>Select a Subject</option>';
             subjects.forEach(subject => {
-                const option = document.createElement('option');
-                option.value = subject.id;
-                option.textContent = `${subject.subject_name} (${subject.subject_code})`;
-                subjectSelect.appendChild(option);
+                const option = new Option(`${subject.subject_name} (${subject.subject_code})`, subject.id);
+                subjectSelect.add(option);
             });
+
+            if (newSubjectId && newSubjectName) {
+                if (![...subjectSelect.options].some(opt => opt.value == newSubjectId)) {
+                    const newOption = new Option(decodeURIComponent(newSubjectName), newSubjectId);
+                    subjectSelect.add(newOption);
+                }
+                subjectSelect.value = newSubjectId;
+                subjectSelect.dispatchEvent(new Event('change'));
+            }
         });
     };
 
@@ -283,58 +329,95 @@ document.addEventListener('DOMContentLoaded', () => {
             loadGradeDataToDOM(defaultStructure);
             return;
         }
-        fetchAPI(`/api/grades/${subjectId}`)
-            .then(data => loadGradeDataToDOM(data.components))
-            .catch(() => loadGradeDataToDOM(defaultStructure));
+        fetchAPI(`grades/${subjectId}`).then(data => {
+            if (data && data.components && Object.keys(data.components).length > 0) {
+                 loadGradeDataToDOM(data.components);
+            } else {
+                 loadGradeDataToDOM(defaultStructure);
+            }
+        }).catch(() => loadGradeDataToDOM(defaultStructure));
     };
     
-    // --- INITIALIZATION & EVENT LISTENERS ---
-    accordionContainer.addEventListener('click', handleDynamicEvents);
+    const addSubjectToHistory = (subject) => {
+        const noHistoryMessage = document.getElementById('no-history-message');
+        if (noHistoryMessage) noHistoryMessage.remove();
+
+        if (document.querySelector(`.grade-history-card[data-subject-id="${subject.id}"]`)) return;
+
+        const card = document.createElement('div');
+        card.className = 'grade-history-card p-4 border rounded-lg hover:bg-gray-50 transition-colors duration-200';
+        card.dataset.subjectId = subject.id;
+        card.innerHTML = `<p class="font-semibold text-gray-800">${subject.subject_name}</p><p class="text-sm text-gray-500">${subject.subject_code}</p>`;
+        gradeHistoryContainer.appendChild(card);
+    };
+    
+    accordionContainer.addEventListener('click', (e) => {
+        const toggleButton = e.target.closest('.accordion-toggle');
+        if (toggleButton) {
+            const content = toggleButton.nextElementSibling;
+            const icon = toggleButton.querySelector('svg');
+            const isOpen = content.style.maxHeight && content.style.maxHeight !== '0px';
+
+            document.querySelectorAll('.accordion-content').forEach(c => { c.style.maxHeight = null });
+            document.querySelectorAll('.accordion-toggle svg').forEach(i => i.classList.remove('rotate-180'));
+
+            if (!isOpen) {
+                content.style.maxHeight = content.scrollHeight + "px";
+                icon.classList.add('rotate-180');
+            }
+        } else {
+            handleDynamicEvents(e);
+        }
+    });
+
     accordionContainer.addEventListener('input', calculateAndUpdateTotals);
     subjectSelect.addEventListener('change', (e) => fetchGradeSetupForSubject(e.target.value));
     
     addGradeBtn.addEventListener('click', () => {
         Swal.fire({
-            title: 'Confirm Grade Scheme',
-            text: 'Are you sure you want to save this for the selected subject?',
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonText: 'Yes, save it!',
-            confirmButtonColor: '#4f46e5',
-            cancelButtonColor: '#d33',
+            title: 'Confirm Grade Scheme', text: 'Are you sure you want to save this for the selected subject?', icon: 'question', showCancelButton: true,
+            confirmButtonText: 'Yes, save it!', confirmButtonColor: '#4f46e5', cancelButtonColor: '#d33',
         }).then(async (result) => {
             if (result.isConfirmed) {
-                const payload = {
-                    subject_id: subjectSelect.value,
-                    components: getGradeDataFromDOM(),
-                };
+                const payload = { subject_id: subjectSelect.value, components: getGradeDataFromDOM() };
                 try {
-                    await fetchAPI('/api/grades', { method: 'POST', body: JSON.stringify(payload) });
-                    Swal.fire('Saved!', 'The grade scheme has been saved successfully.', 'success');
-                } catch(e) { /* Error is handled globally in fetchAPI */ }
+                    const data = await fetchAPI('grades', { method: 'POST', body: JSON.stringify(payload) });
+                    Swal.fire('Saved!', data.message, 'success');
+                    addSubjectToHistory(data.subject);
+                    subjectSelect.value = '';
+                    loadGradeDataToDOM(defaultStructure);
+                } catch(e) { /* Error is handled in fetchAPI */ }
             }
         });
     });
 
-    document.querySelectorAll('.accordion-toggle').forEach(button => {
-        button.addEventListener('click', () => {
-            const content = button.nextElementSibling;
-            const icon = button.querySelector('svg');
-            const isOpen = content.style.maxHeight;
-            
-            // Close all accordions
-            document.querySelectorAll('.accordion-content').forEach(c => c.style.maxHeight = null);
-            document.querySelectorAll('.accordion-toggle svg').forEach(i => i.classList.remove('rotate-180'));
-
-            // Open the clicked one if it was closed
-            if (!isOpen) {
-                content.style.maxHeight = content.scrollHeight + "px";
-                icon.classList.add('rotate-180');
-            }
-        });
+    gradeHistoryContainer.addEventListener('click', async (e) => {
+        const card = e.target.closest('.grade-history-card');
+        if (card) {
+            try {
+                const gradeData = await fetchAPI(`grades/${card.dataset.subjectId}`);
+                let contentHtml = '<div class="space-y-4">';
+                for (const [period, data] of Object.entries(gradeData.components)) {
+                    contentHtml += `<div class="border rounded-lg p-3 bg-gray-50"><h4 class="font-bold capitalize text-md text-gray-700">${period} (${data.weight}%)</h4><ul class="list-disc pl-5 mt-2 space-y-1 text-gray-600">`;
+                    (data.components || []).forEach(comp => {
+                        contentHtml += `<li><strong>${comp.name}</strong>: ${comp.weight}%</li>`;
+                        if (comp.sub_components && comp.sub_components.length > 0) {
+                            contentHtml += `<ul class="list-disc pl-6">`;
+                            comp.sub_components.forEach(sub => { contentHtml += `<li>${sub.name}: ${sub.weight}%</li>`; });
+                            contentHtml += `</ul>`;
+                        }
+                    });
+                    contentHtml += `</ul></div>`;
+                }
+                contentHtml += '</div>';
+                modalContent.innerHTML = contentHtml;
+                gradeModal.classList.remove('hidden');
+            } catch (error) { Swal.fire('Error', 'Could not fetch grade details.', 'error'); }
+        }
     });
 
-    // --- INITIAL LOAD ---
+    closeModalBtn.addEventListener('click', () => gradeModal.classList.add('hidden'));
+
     fetchAndPopulateSubjects();
     loadGradeDataToDOM(defaultStructure);
 });

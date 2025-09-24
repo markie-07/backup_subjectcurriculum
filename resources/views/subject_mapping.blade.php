@@ -533,14 +533,20 @@
 
         confirmGradeSetupBtn.addEventListener('click', () => {
             hideGradeSetupConfirmation();
-            window.location.href = `/grade_setup?subjectId=${createdSubjectData.subject.id}`;
+
+            // Get the subject details from the data you received after creation
+            const subject = createdSubjectData.subject;
+            const subjectId = subject.id;
+            const subjectName = `${subject.subject_name} (${subject.subject_code})`;
+
+            // Redirect to the correct URL with the new parameters
+            window.location.href = `/grade-setup?new_subject_id=${subjectId}&new_subject_name=${encodeURIComponent(subjectName)}`;
         });
 
         declineGradeSetupBtn.addEventListener('click', () => {
             hideGradeSetupConfirmation();
             showSuccess();
         });
-
         successOkBtn.addEventListener('click', () => {
             hideSuccess();
             location.reload();
